@@ -4,10 +4,13 @@ Guidance for anyone (human or agent) changing this repo. **`docs/IMPLEMENTATION_
 
 ## Status
 
-- Steps 1 (scaffold), 2 (database) and 3 (login) are done; the real Supabase project is set up and `app/.env` holds real values. Step 3 was checked by the owner by hand (login, reload, "Close the book"); only the rate-limit message is untested. Steps 4 to 8 are not started.
-- `LoginPage` is real. `LogPage` is a placeholder (title plus a temporary "Close the book" button); the real log comes in steps 4 and 5.
+- Steps 1 (scaffold), 2 (database), 3 (login) and 4 (read path) are done; the real Supabase project is set up and `app/.env` holds real values. Step 3 was checked by the owner by hand (login, reload, "Close the book"); only the rate-limit message is untested. Step 4 was checked in the browser with mocked data only (see the plan); the owner should look at it with real quests. Steps 5 to 8 are not started.
+- `LoginPage` and the read-only log are real. `LogPage` is the layout route for `#/` and `#/quest/:id`: ribbons (`Ribbons`), left page (`QuestList`), "Close the book" in the left page footer, and the right page through `<Outlet />` (`EmptyQuestPage`, `QuestPage` in `pages/QuestPage.tsx`). The "Inscribe a quest" button is there but disabled, and `QuestView` has no action buttons yet: both are phase 5.
+- Store is `store/quests.ts` (zustand): quests, locks, `loaded`, `connection`, `load()` (one fetch of both tables, joins one already running), `reset()` (called by `closeTheBook`), plus the grouping/sorting and lock selectors. Nothing sets `connection` to `reconnecting` yet; that is phase 7. Lock display in the list and view is phase 6.
+- The ribbon filter lives in `?tab=` (`all` is omitted from the URL; values `active`, `on_hold`, `fulfilled`, `archive`) and is carried along when picking a quest. The log route has `shouldRevalidate: () => false` so changing it doesn't re-run `requireLogin`.
 - Auth guard is route loaders in `lib/auth.ts` (`requireLogin` on the log routes, `skipLoginIfSignedIn` on login). The active name lives in `sessionStorage['dql.name']`, the pre-fill name in `localStorage['dql.lastName']` (`lib/playerName.ts`). A new tab has a session but no name, so it asks for the name again, as designed.
-- Shared button classes (`.btn`, `.btn-primary`, `.btn-secondary`) and form styles are in `styles/book.css`.
+- Shared button classes (`.btn`, `.btn-primary`, `.btn-secondary`) and form styles are in `styles/book.css`; the log's styles (ribbons, list, quest view, seal) are in `styles/log.css`.
+- Ordinals above 999 have no words: `toOrdinalWords` returns `null` and `questKicker` gives "Quest 1000". 101 reads "one hundred first" (no "and").
 
 ## Commands
 

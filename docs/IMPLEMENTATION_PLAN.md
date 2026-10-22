@@ -827,7 +827,7 @@ Put the licence credit in `CREDITS.md` (section 11).
 
 ## 10. Build order and done criteria
 
-Commit after each step. Status: steps 1 to 3 are done; steps 4 to 8 are not started.
+Commit after each step. Status: steps 1 to 4 are done; steps 5 to 8 are not started.
 
 1. **Scaffold. (Done.)** Vite React TS app in `app/`, router, the table and book layers with scaling, fonts loaded, theme tokens. Dockerfile, nginx.conf, docker-compose.yml, `run.bat`, `stop.bat`.
    *Done when* `run.bat` opens the table filling the window with the book centred on it, correctly scaled at 1280×720, 1920×1080 and 2560×1440 (and an ultrawide such as 2560×1080).
@@ -838,7 +838,8 @@ Commit after each step. Status: steps 1 to 3 are done; steps 4 to 8 are not star
 3. **Login. (Done.)** The login page on the book, the auth guard, the name handling and "Close the book".
    *Done when* a wrong password shows the error, the right one lands on the log, and a reload stays logged in with the name kept.
    *As built:* `lib/supabase.ts`, `lib/playerName.ts`, `lib/auth.ts` (route loaders `requireLogin` / `skipLoginIfSignedIn`, `closeTheBook`), `BookHeader`, `Flourish`, real `LoginPage`, and a `LogPage` placeholder with a "Close the book" button (bottom-left of the left page, temporary). Build passes. In the browser: a logged-out visit to `#/` redirects to `#/login`, and a wrong password shows "That password is not known here." **Owner verified by hand:** right password lands on the log, reload stays logged in, "Close the book" works. **Not verified:** the rate-limit message. The lock release in "Close the book" waits for phase 6. `.btn` styles live in `book.css`.
-4. **Read path.** Store, initial load, quest list with ribbons and grouping, quest view (ledger, drop cap, seal, footer), empty and sealed states.
+4. **Read path. (Done.)** Store, initial load, quest list with ribbons and grouping, quest view (ledger, drop cap, seal, footer), empty and sealed states.
+   *As built:* `lib/ordinal.ts` (with the unit tests from 8.5), `dates.ts`, `sanitize.ts`, `useNow.ts`; `store/quests.ts`; `Ribbons`, `QuestList`, `QuestRow`, `QuestView`, `WaxSeal`, `SealedArchiveNotice`, `icons`; `LogPage` is now the layout and `pages/QuestPage.tsx` holds the right-page routes; styles in `styles/log.css`. `npm run build` and `npm test` (15 tests) pass. Checked in the browser at 1920×1080 with the Supabase REST calls mocked (a fake session and eight sample quests, nothing written to the database): grouping, oldest-first order, ribbon filtering with `?tab=`, ribbon arrow keys, selection kept across ribbons, quest view (ledger, drop cap, seal, relative footer, script tag stripped), unknown id, unknown path redirect, empty right page, and the sealed state (a rejected fetch). **Not verified:** real data from the owner's project, the empty-log and filtered-empty messages, other window sizes, a real paused-project response. Left for later phases: the "Inscribe a quest" button is disabled until phase 5; the view's action buttons (phase 5); lock display (phase 6); the "archived by someone else" notice (phase 7).
 5. **Write path.** Create, amend (Tiptap), status buttons, archive and unarchive, all via RPC.
 6. **Locks.** Acquire, heartbeat, release, unload release, lock display in list and view, lock-lost handling, confirm dialog via `useBlocker`, `beforeunload`.
 7. **Live sync.** Realtime subscription, refetch on (re)subscribe and visibility, toasts, the "wavering connection" banner.

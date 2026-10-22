@@ -1,4 +1,5 @@
 import { redirect } from 'react-router'
+import { useQuests } from '../store/quests'
 import { clearActiveName, getActiveName } from './playerName'
 import { supabase } from './supabase'
 
@@ -20,4 +21,5 @@ export async function skipLoginIfSignedIn() {
 export async function closeTheBook() {
   await supabase.auth.signOut()
   clearActiveName()
+  useQuests.getState().reset()
 }
