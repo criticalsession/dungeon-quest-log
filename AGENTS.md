@@ -4,7 +4,8 @@ Guidance for anyone (human or agent) changing this repo. **`docs/IMPLEMENTATION_
 
 ## Status
 
-- Step 1 (scaffold) is done. Steps 2 to 8 are not started.
+- Steps 1 (scaffold) and 2 (database) are done. Steps 3 to 8 are not started.
+- Step 2's SQL was tested on a local Postgres with stubbed Supabase roles, not on a real Supabase project. The owner still has to run `supabase/schema.sql` there and fill `app/.env` (plan section 12).
 - Placeholder `LoginPage` and `LogPage` only render the title. Real pages come in steps 3 to 5.
 
 ## Commands
