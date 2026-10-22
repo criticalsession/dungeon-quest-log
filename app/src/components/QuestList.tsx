@@ -27,8 +27,7 @@ export function QuestList({ tab, selectedId }: { tab: Tab; selectedId: string | 
         <h2 className="list-title">
           {title} &middot; {total}
         </h2>
-        {/* Goes to #/new once the editor exists (phase 5). */}
-        <button type="button" className="btn btn-primary" disabled>
+        <button type="button" className="btn btn-primary" onClick={() => navigate(`/new${search}`)}>
           <QuillIcon />
           Inscribe a quest
         </button>

@@ -3,7 +3,7 @@ import { Stage } from './components/Stage'
 import { requireLogin, skipLoginIfSignedIn } from './lib/auth'
 import { LoginPage } from './pages/LoginPage'
 import { LogPage } from './pages/LogPage'
-import { EmptyQuestPage, QuestPage } from './pages/QuestPage'
+import { EditQuestPage, EmptyQuestPage, NewQuestPage, QuestPage } from './pages/QuestPage'
 
 export const router = createHashRouter([
   {
@@ -19,6 +19,8 @@ export const router = createHashRouter([
         children: [
           { index: true, element: <EmptyQuestPage /> },
           { path: 'quest/:id', element: <QuestPage /> },
+          { path: 'quest/:id/edit', element: <EditQuestPage /> },
+          { path: 'new', element: <NewQuestPage /> },
           { path: '*', loader: () => redirect('/') },
         ],
       },

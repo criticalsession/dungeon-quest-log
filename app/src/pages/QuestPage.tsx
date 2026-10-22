@@ -1,7 +1,36 @@
-import { Link, useLocation, useParams } from 'react-router'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import { Flourish } from '../components/Flourish'
+import { BLANK, QuestEditor } from '../components/QuestEditor'
 import { QuestView } from '../components/QuestView'
-import { useQuests } from '../store/quests'
+import { getActiveName } from '../lib/playerName'
+import { acquireLock, createQuest, QuestError, releaseLock, saveQuest, type QuestFields } from '../lib/questApi'
+import { supabase } from '../lib/supabase'
+import { useQuests, type Quest } from '../store/quests'
+
+const SAVE_FAILED = 'Your words could not reach the archive. Try again.'
+
+const fieldsOf = (q: Quest): QuestFields => ({
+  title: q.title,
+  description: q.description,
+  date_received: q.date_received,
+  session_number: q.session_number,
+  quest_giver: q.quest_giver ?? '',
+  location_received: q.location_received ?? '',
+  quest_location: q.quest_location ?? '',
+})
+
+function NotFound() {
+  const { search } = useLocation()
+  return (
+    <div className="notice">
+      <p>No such quest is written here.</p>
+      <Link className="btn btn-secondary" to={`/${search}`}>
+        Return to the log
+      </Link>
+    </div>
+  )
+}
 
 /** Right page with nothing selected (`#/`). */
 export function EmptyQuestPage() {
@@ -18,20 +47,154 @@ export function EmptyQuestPage() {
 /** Right page for `#/quest/:id`. */
 export function QuestPage() {
   const { id } = useParams()
-  const { search } = useLocation()
   const quest = useQuests((s) => (id ? s.quests[id] : undefined))
+
+  return <section className="page page-right">{quest ? <QuestView quest={quest} /> : <NotFound />}</section>
+}
+
+/** Right page for `#/new`. Nothing exists yet, so there is no lock to take. */
+export function NewQuestPage() {
+  const navigate = useNavigate()
+  const { search } = useLocation()
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+
+  async function save(fields: QuestFields) {
+    setSaving(true)
+    setError('')
+    try {
+      const quest = await createQuest(getActiveName(), fields)
+      navigate(`/quest/${quest.id}${search}`)
+    } catch {
+      setError(SAVE_FAILED)
+      setSaving(false)
+    }
+  }
 
   return (
     <section className="page page-right">
-      {quest ? (
-        <QuestView quest={quest} />
-      ) : (
+      <QuestEditor
+        initial={BLANK}
+        saving={saving}
+        canSave
+        banner={error && <p className="form-error" role="alert">{error}</p>}
+        onSave={save}
+        onAbandon={() => navigate(`/${search}`)}
+      />
+    </section>
+  )
+}
+
+type EditState =
+  | { kind: 'acquiring' }
+  | { kind: 'ready'; initial: QuestFields }
+  | { kind: 'locked'; message: string }
+
+/** Right page for `#/quest/:id/edit`. Takes the edit lock when it opens and gives it up when it closes. */
+export function EditQuestPage() {
+  const { id } = useParams()
+  const { search } = useLocation()
+  const navigate = useNavigate()
+  const exists = useQuests((s) => !!(id && s.quests[id]))
+  const [state, setState] = useState<EditState>({ kind: 'acquiring' })
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+  const [lockLost, setLockLost] = useState(false)
+  // save_quest releases the lock itself; otherwise leaving the page does.
+  const sealed = useRef(false)
+
+  useEffect(() => {
+    if (!id || !exists) return
+    let cancelled = false
+    sealed.current = false
+    acquireLock(id, getActiveName()).then(
+      () => {
+        // The draft starts from the store as it is now and is never refreshed afterwards.
+        const quest = useQuests.getState().quests[id]
+        if (!cancelled && quest) setState({ kind: 'ready', initial: fieldsOf(quest) })
+      },
+      async (e: unknown) => {
+        if (cancelled) return
+        let message = SAVE_FAILED
+        if (e instanceof QuestError && e.code === 'QUEST_LOCKED') {
+          const { data } = await supabase.from('quest_locks').select('holder_name').eq('quest_id', id).maybeSingle()
+          message = `${data?.holder_name ?? 'Someone'} is already penning changes to this quest.`
+        }
+        if (!cancelled) setState({ kind: 'locked', message })
+      },
+    )
+    return () => {
+      cancelled = true
+      if (!sealed.current) releaseLock(id).catch(() => undefined)
+    }
+  }, [id, exists])
+
+  if (!id || !exists) {
+    return (
+      <section className="page page-right">
+        <NotFound />
+      </section>
+    )
+  }
+
+  const view = `/quest/${id}${search}`
+
+  async function save(fields: QuestFields) {
+    setSaving(true)
+    setError('')
+    try {
+      await saveQuest(id!, getActiveName(), fields)
+      sealed.current = true
+      navigate(view)
+    } catch (e) {
+      if (e instanceof QuestError && e.code === 'LOCK_NOT_HELD') setLockLost(true)
+      else setError(SAVE_FAILED)
+      setSaving(false)
+    }
+  }
+
+  return (
+    <section className="page page-right">
+      {state.kind === 'locked' && (
         <div className="notice">
-          <p>No such quest is written here.</p>
-          <Link className="btn btn-secondary" to={`/${search}`}>
-            Return to the log
+          <p>{state.message}</p>
+          <Link className="btn btn-secondary" to={view}>
+            Return to the quest
           </Link>
         </div>
+      )}
+      {state.kind === 'ready' && (
+        <QuestEditor
+          initial={state.initial}
+          saving={saving}
+          canSave={!lockLost}
+          banner={
+            lockLost ? (
+              <p className="form-error" role="alert">
+                Your hold on this page lapsed and someone else has taken up the pen. Your changes can’t be sealed.
+              </p>
+            ) : (
+              error && <p className="form-error" role="alert">{error}</p>
+            )
+          }
+          extraActions={(draft) =>
+            lockLost && (
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => {
+                  const div = document.createElement('div')
+                  div.innerHTML = draft.description
+                  void navigator.clipboard?.writeText(div.textContent ?? '')
+                }}
+              >
+                Copy my text
+              </button>
+            )
+          }
+          onSave={save}
+          onAbandon={() => navigate(view)}
+        />
       )}
     </section>
   )

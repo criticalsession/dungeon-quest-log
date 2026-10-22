@@ -39,6 +39,8 @@ type State = {
   connection: Connection
   /** Fetch both tables. Safe to call again: a call while one is running joins it. */
   load: () => Promise<void>
+  /** Insert or replace one quest (a row an RPC returned). */
+  upsertQuest: (quest: Quest) => void
   /** Forget everything (on "Close the book"). */
   reset: () => void
 }
@@ -75,6 +77,14 @@ export const useQuests = create<State>((set, get) => ({
     })
     return inFlight
   },
+
+  upsertQuest: (quest) =>
+    set((s) => {
+      const known = s.quests[quest.id]
+      // Never go backwards if a newer copy (from a realtime event) got here first.
+      if (known && known.version > quest.version) return s
+      return { quests: { ...s.quests, [quest.id]: quest } }
+    }),
 
   reset: () => set(empty),
 }))
