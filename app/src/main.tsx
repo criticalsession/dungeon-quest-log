@@ -6,6 +6,7 @@ import './styles/fonts.css'
 import './styles/theme.css'
 import './styles/book.css'
 import './styles/log.css'
+import './styles/narrow.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

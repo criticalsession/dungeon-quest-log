@@ -2,7 +2,31 @@
 
 A shared quest tracker for one D&D party, drawn as an old leather-bound journal on a tavern table. Every player runs it on their own PC in Docker; everyone shares one Supabase database, so changes appear live for the whole party.
 
-> Status: under construction. The database and setup checklist are in place; the app pages are still being built. See `docs/IMPLEMENTATION_PHASES.md`.
+## For players
+
+You need a Windows PC with [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed. Nothing else.
+
+1. Start Docker Desktop and wait until it says it is running.
+2. Clone this repo (or download it as a ZIP and unpack it).
+3. Double-click **`run.bat`**. The first run builds the app and takes a few minutes; later runs are quick. Your browser opens the quest log.
+4. Enter your character's name and the party password (ask the person who set this up), then press **Open the book**.
+
+To stop it, double-click **`stop.bat`**. To leave the log, press **Close the book**.
+
+**Using it**
+
+- Pick a quest on the left page to read it on the right. The ribbons on the right edge filter the list by status.
+- **Inscribe a quest** adds one. **Amend** edits one; while you do, others see a padlock and can't change it, and it frees up when you finish or leave.
+- Changes by other players appear on their own, with a small note in the bottom-left corner.
+- On a phone or a narrow window the book becomes one scrolling page. The keyboard works throughout: Tab between buttons, and the arrow keys move between ribbons.
+
+**If something goes wrong**
+
+- *"Docker is not running"*: start Docker Desktop, then run `run.bat` again.
+- *"Port is already allocated"*: change `QUESTLOG_PORT` in the `.env` file at the top of the repo (default 47218), then run `run.bat` again.
+- *"The archive is sealed" or a connection warning*: the shared database is paused or your connection dropped. The log reconnects by itself; if the database is paused, tell the person who set it up.
+
+Credits for the fonts and artwork are in [CREDITS.md](CREDITS.md).
 
 ## One-time setup (the repo owner, once per party)
 
