@@ -1,0 +1,9 @@
+@font-face { font-family: 'Nodesto'; font-weight: 400; src: url('/fonts/nodesto-caps-condensed.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Nodesto'; font-weight: 700; src: url('/fonts/nodesto-caps-condensed-bold.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Bookinsanity'; font-weight: 400; font-style: normal; src: url('/fonts/bookinsanity.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Bookinsanity'; font-weight: 400; font-style: italic; src: url('/fonts/bookinsanity-italic.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Bookinsanity'; font-weight: 700; font-style: normal; src: url('/fonts/bookinsanity-bold.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Bookinsanity'; font-weight: 700; font-style: italic; src: url('/fonts/bookinsanity-bold-italic.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Mr Eaves'; font-weight: 400; src: url('/fonts/mr-eaves-small-caps.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Solbera Imitation'; font-weight: 400; src: url('/fonts/solbera-imitation.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Zatanna'; font-weight: 400; src: url('/fonts/zatanna-misdirection.otf') format('opentype'); font-display: swap; }

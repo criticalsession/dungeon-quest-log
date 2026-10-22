@@ -1,0 +1,50 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #root { height: 100%; margin: 0; }
+
+body {
+  overflow: hidden;
+  background: #1a0f08;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 24px;
+  line-height: 1.55;
+}
+
+/* Blurred copy of the table behind the stage, so there are no empty bars. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: -40px;
+  background: url('/images/tome-background.webp') center / cover no-repeat;
+  filter: blur(18px) brightness(.45);
+  z-index: -1;
+}
+
+/* 2000x1333 design space, scaled and centred by <Stage>. */
+.stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: center center;
+  background: url('/images/tome-background.webp') 0 0 / 100% 100% no-repeat;
+}
+
+/* Content boxes (design pixels). */
+.page { position: absolute; top: 185px; height: 875px; }
+.page-left { left: 245px; width: 690px; }
+.page-right { left: 1035px; width: 675px; }
+
+.book-title {
+  margin: 0;
+  font: 400 64px/1.1 var(--font-title);
+  color: var(--ink-title);
+}
+.book-subtitle { margin: 0 0 12px; font-style: italic; font-size: 20px; color: var(--ink-muted); }
+.page-heading { margin: 0; font: 400 52px/1.1 var(--font-title); color: var(--ink-title); }
+
+:focus-visible { outline: 2px solid var(--crimson); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
