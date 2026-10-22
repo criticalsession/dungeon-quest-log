@@ -1,8 +1,9 @@
 import Placeholder from '@tiptap/extension-placeholder'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import { useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { sanitizeHtml } from '../lib/sanitize'
+import { normaliseHtml } from '../lib/useUnsavedGuard'
 import type { QuestFields } from '../lib/questApi'
 import { EditorToolbar } from './EditorToolbar'
 
@@ -47,14 +48,22 @@ type Props = {
   /** Shown above the buttons (save errors, lock lost). */
   banner?: ReactNode
   canSave: boolean
+  /** Called when the draft starts or stops differing from `initial`. */
+  onDirtyChange?: (dirty: boolean) => void
   onSave: (fields: QuestFields) => void
   onAbandon: () => void
   /** Extra buttons beside Abandon (e.g. "Copy my text" once the lock is lost). */
   extraActions?: (draft: QuestFields) => ReactNode
 }
 
-export function QuestEditor({ initial, saving, banner, canSave, onSave, onAbandon, extraActions }: Props) {
+const isDirty = (a: QuestFields, b: QuestFields) =>
+  normaliseHtml(a.description) !== normaliseHtml(b.description) ||
+  (Object.keys(a) as (keyof QuestFields)[]).some((k) => k !== 'description' && a[k] !== b[k])
+
+export function QuestEditor({ initial, saving, banner, canSave, onDirtyChange, onSave, onAbandon, extraActions }: Props) {
   const [draft, setDraft] = useState(initial)
+  const dirty = useMemo(() => isDirty(initial, draft), [initial, draft])
+  useEffect(() => onDirtyChange?.(dirty), [dirty, onDirtyChange])
   const [titleMissing, setTitleMissing] = useState(false)
   const editor = useEditor({
     extensions: EXTENSIONS,

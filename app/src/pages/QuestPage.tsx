@@ -1,11 +1,22 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
+import { ConfirmDialog } from '../components/ConfirmDialog'
 import { Flourish } from '../components/Flourish'
 import { BLANK, QuestEditor } from '../components/QuestEditor'
 import { QuestView } from '../components/QuestView'
 import { getActiveName } from '../lib/playerName'
-import { acquireLock, createQuest, QuestError, releaseLock, saveQuest, type QuestFields } from '../lib/questApi'
+import {
+  acquireLock,
+  createQuest,
+  heartbeatLock,
+  QuestError,
+  releaseLock,
+  releaseLockOnUnload,
+  saveQuest,
+  type QuestFields,
+} from '../lib/questApi'
 import { supabase } from '../lib/supabase'
+import { useUnsavedGuard } from '../lib/useUnsavedGuard'
 import { useQuests, type Quest } from '../store/quests'
 
 const SAVE_FAILED = 'Your words could not reach the archive. Try again.'
@@ -58,12 +69,16 @@ export function NewQuestPage() {
   const { search } = useLocation()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [dirty, setDirty] = useState(false)
+  const allow = useRef(false)
+  const blocker = useUnsavedGuard(dirty, allow)
 
   async function save(fields: QuestFields) {
     setSaving(true)
     setError('')
     try {
       const quest = await createQuest(getActiveName(), fields)
+      allow.current = true
       navigate(`/quest/${quest.id}${search}`)
     } catch {
       setError(SAVE_FAILED)
@@ -78,9 +93,11 @@ export function NewQuestPage() {
         saving={saving}
         canSave
         banner={error && <p className="form-error" role="alert">{error}</p>}
+        onDirtyChange={setDirty}
         onSave={save}
         onAbandon={() => navigate(`/${search}`)}
       />
+      <ConfirmDialog open={blocker.state === 'blocked'} onKeep={() => blocker.reset?.()} onAbandon={() => blocker.proceed?.()} />
     </section>
   )
 }
@@ -100,8 +117,39 @@ export function EditQuestPage() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [lockLost, setLockLost] = useState(false)
+  const [dirty, setDirty] = useState(false)
   // save_quest releases the lock itself; otherwise leaving the page does.
   const sealed = useRef(false)
+  const blocker = useUnsavedGuard(dirty, sealed)
+  const ready = state.kind === 'ready'
+
+  // Keep the hold alive while editing, and check it as soon as the tab is looked at again (plan 7.6).
+  useEffect(() => {
+    if (!id || !ready) return
+    let stopped = false
+    const beat = () => {
+      heartbeatLock(id).then(
+        (held) => {
+          if (!held && !stopped) setLockLost(true)
+        },
+        () => undefined, // a network blip: the next beat tries again
+      )
+    }
+    const timer = setInterval(beat, 30_000)
+    const onVisible = () => document.visibilityState === 'visible' && beat()
+    // The page can't await anything while it closes; a keepalive request carries the release out.
+    const onHide = () => {
+      if (!sealed.current) releaseLockOnUnload(id)
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    window.addEventListener('pagehide', onHide)
+    return () => {
+      stopped = true
+      clearInterval(timer)
+      document.removeEventListener('visibilitychange', onVisible)
+      window.removeEventListener('pagehide', onHide)
+    }
+  }, [id, ready])
 
   useEffect(() => {
     if (!id || !exists) return
@@ -192,10 +240,12 @@ export function EditQuestPage() {
               </button>
             )
           }
+          onDirtyChange={setDirty}
           onSave={save}
           onAbandon={() => navigate(view)}
         />
       )}
+      <ConfirmDialog open={blocker.state === 'blocked'} onKeep={() => blocker.reset?.()} onAbandon={() => blocker.proceed?.()} />
     </section>
   )
 }

@@ -6,7 +6,8 @@ import { getActiveName } from '../lib/playerName'
 import { QuestError, setArchived, setStatus } from '../lib/questApi'
 import { sanitizeHtml } from '../lib/sanitize'
 import { useNow } from '../lib/useNow'
-import type { Quest, QuestStatus } from '../store/quests'
+import { getClientId } from '../lib/clientId'
+import { lockHeldByOther, useQuests, type Quest, type QuestStatus } from '../store/quests'
 import { WaxSeal } from './WaxSeal'
 
 function LedgerRow({ label, value, wide }: { label: string; value: string; wide?: boolean }) {
@@ -37,6 +38,10 @@ function QuestActions({ quest }: { quest: Quest }) {
   const { search } = useLocation()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const locks = useQuests((s) => s.locks)
+  const now = useNow(15_000)
+  const holder = lockHeldByOther(locks, quest.id, getClientId(), now)?.holder_name
+  const lockedTitle = holder ? `${holder} is penning changes` : undefined
 
   async function perform(action: Action) {
     setBusy(true)
@@ -55,13 +60,27 @@ function QuestActions({ quest }: { quest: Quest }) {
 
   return (
     <>
+      {holder && <p className="lock-note">{holder} is penning changes…</p>}
       {error && <p className="form-error" role="alert">{error}</p>}
       <div className="quest-actions">
-        <button type="button" className="btn btn-primary" disabled={busy} onClick={() => navigate(`/quest/${quest.id}/edit${search}`)}>
+        <button
+          type="button"
+          className="btn btn-primary"
+          disabled={busy || !!holder}
+          title={lockedTitle}
+          onClick={() => navigate(`/quest/${quest.id}/edit${search}`)}
+        >
           Amend
         </button>
         {actionsFor(quest).map((a) => (
-          <button key={a.label} type="button" className="btn btn-secondary" disabled={busy} onClick={() => void perform(a)}>
+          <button
+            key={a.label}
+            type="button"
+            className="btn btn-secondary"
+            disabled={busy || !!holder}
+            title={lockedTitle}
+            onClick={() => void perform(a)}
+          >
             {a.label}
           </button>
         ))}
