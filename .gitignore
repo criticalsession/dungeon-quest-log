@@ -3,3 +3,8 @@ dist
 *.local
 .DS_Store
 *.tsbuildinfo
+
+# Demo video outputs (tools/demo)
+/demo/
+tools/demo/out/
+tools/demo/venv/
