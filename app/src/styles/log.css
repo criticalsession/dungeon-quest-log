@@ -1,0 +1,178 @@
+/* The log itself: ribbons, quest list (left page) and quest view (right page). Sizes are design pixels. */
+
+/* ── Ribbons ─────────────────────────────────────────────────────────────── */
+/* Left end at x=1890, under the cover (the book's edge is at about 1925). */
+.ribbons {
+  --hidden: 35px;
+  position: absolute;
+  top: 260px;
+  left: 1890px;
+  z-index: 0;
+}
+.ribbons [role='tablist'] { display: flex; flex-direction: column; gap: 12px; }
+.ribbon {
+  --reach: 118px; /* how far it sticks out past the cover */
+  width: calc(var(--hidden) + var(--reach));
+  height: 58px;
+  padding: 0 24px 0 calc(var(--hidden) + 10px);
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--ribbon-colour) 70%, white);
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--ribbon-colour) 88%, white), var(--ribbon-colour));
+  box-shadow: inset 10px 0 10px -6px rgba(0, 0, 0, .6);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 50%, 100% 100%, 0 100%);
+  color: var(--on-crimson);
+  font: 400 24px/1 var(--font-title);
+  letter-spacing: .06em;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: width 200ms ease-out;
+}
+.ribbon:hover { --reach: 126px; }
+.ribbon[aria-selected='true'] { --reach: 172px; }
+.ribbon[aria-selected='true']:hover { --reach: 180px; }
+.ribbon:focus-visible { outline-offset: -6px; }
+
+/* ── Left page ───────────────────────────────────────────────────────────── */
+.page.page-log { display: flex; flex-direction: column; overflow: hidden; }
+.page-log > * { flex: none; }
+
+.list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 24px 0 8px;
+}
+.list-title {
+  margin: 0;
+  font: 400 20px/1.2 var(--font-label);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--crimson);
+}
+.btn-icon { width: 20px; height: 20px; margin-right: 10px; }
+
+.list-scroll {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-leader) transparent;
+  padding-bottom: 24px;
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 36px), transparent);
+}
+.list-empty { margin: 32px 12px; font-style: italic; color: var(--ink-muted); }
+
+.qgroup + .qgroup { margin-top: 20px; }
+.qgroup-title {
+  margin: 0 0 4px;
+  font: 400 20px/1.2 var(--font-label);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.qgroup-active { color: var(--status-active); }
+.qgroup-on_hold { color: var(--status-hold); }
+.qgroup-fulfilled { color: var(--status-done); }
+
+.qrow {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.qrow:hover { background: var(--wash-hover); }
+.qrow-selected, .qrow-selected:hover {
+  background: var(--wash-selected);
+  box-shadow: inset 0 0 0 1px var(--crimson);
+}
+.qrow-done { opacity: .8; }
+.marker { flex: none; width: 24px; height: 24px; margin-top: 4px; }
+.qrow-text { flex: 1; min-width: 0; }
+.qrow-title { display: block; font: 400 26px/1.25 var(--font-title); color: var(--ink-title); }
+.qrow-done .qrow-title { text-decoration: line-through; text-decoration-color: var(--crimson); }
+.qrow-meta { display: block; font-style: italic; font-size: 20px; line-height: 1.35; color: var(--ink-muted); }
+.chevron { flex: none; width: 24px; height: 24px; margin-top: 6px; color: var(--crimson); }
+
+.page-foot { padding-top: 12px; }
+
+/* ── Right page ──────────────────────────────────────────────────────────── */
+.page-right {
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 36px), transparent);
+  padding-bottom: 36px;
+}
+
+.quest-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.kicker {
+  margin: 0;
+  font: 400 17px/1.2 var(--font-label);
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--crimson);
+}
+.quest-title { margin: 8px 0 0; font: 400 52px/1.1 var(--font-title); color: var(--ink-title); }
+.wax-seal { flex: none; width: 88px; height: 88px; margin-top: -8px; transform: rotate(-8deg); }
+.wax-seal-label { font: 400 9px var(--font-label); letter-spacing: 2px; fill: var(--on-crimson); }
+
+.ledger {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 28px;
+  row-gap: 8px;
+  margin: 24px 0;
+}
+.ledger-row { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.ledger-wide { grid-column: 1 / -1; }
+.ledger-row dt {
+  flex: none;
+  font: 400 17px/1.2 var(--font-label);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-label);
+}
+.ledger-leader { flex: 1; min-width: 12px; border-bottom: 2px dotted var(--ink-leader); }
+.ledger-row dd { margin: 0; }
+
+.description > * { margin: 0 0 14px; }
+.description h2 { font: 400 34px/1.2 var(--font-title); color: var(--ink-title); }
+.description h3 { font: 400 28px/1.2 var(--font-title); color: var(--ink-title); }
+.description blockquote { padding-left: 18px; border-left: 3px solid var(--ink-leader); font-style: italic; color: var(--ink-muted); }
+.description hr { border: 0; border-top: 2px dotted var(--ink-leader); }
+.description > p:first-of-type::first-letter {
+  float: left;
+  margin: 6px 12px 0 0;
+  padding: 6px 10px;
+  font-family: var(--font-drop);
+  font-size: 4.1em;
+  line-height: .9;
+  color: var(--gold-bright);
+  background: var(--crimson-deep);
+  border: 3px double var(--gold);
+}
+
+.quest-foot { margin: 28px 0 0; text-align: right; font-style: italic; font-size: 20px; color: var(--ink-label); }
+
+.empty-state {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  opacity: .6;
+  font-style: italic;
+  color: var(--ink-muted);
+}
+.empty-state .flourish { width: 360px; height: 29px; margin: 0 0 20px; }
+
+.notice { margin-top: 24px; display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }
+.notice > p { margin: 0; }
+.notice .page-heading { margin-bottom: -8px; }
