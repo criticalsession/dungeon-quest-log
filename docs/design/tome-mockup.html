@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tome mockup (reference)</title>
+</head>
+<body>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&amp;family=Cinzel:wght@500;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;1,400&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#1c1108}
+a{color:#7a1f12}a:hover{color:#4a120a}
+.qrow{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;background:transparent;border:0;padding:10px 12px;border-radius:4px;cursor:pointer;font:inherit;color:inherit}
+.qrow:hover{background:rgba(120,70,20,.10)}
+.ribbon{writing-mode:vertical-rl;font-family:'Cinzel',serif;font-size:13px;letter-spacing:.12em;color:#f6e7c4;border:0;cursor:pointer;padding:16px 10px 22px 8px;clip-path:polygon(0 0,100% 0,100% 100%,50% calc(100% - 10px),0 100%);text-transform:uppercase}
+.inkbtn{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.08em;text-transform:uppercase;background:transparent;color:#4a2a12;border:1px solid #8a6436;padding:10px 16px;border-radius:3px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.inkbtn:hover{background:rgba(120,70,20,.12)}
+</style>
+<div style="position: relative; width: 100%; min-height: 900px; overflow: hidden; font-family: 'EB Garamond', Georgia, serif; color: #2b1a0c; background: repeating-linear-gradient(177deg, #3b2313 0px, #2c190c 13px, #44291a 21px, #2a170a 37px, #3a2212 52px);">
+
+  <svg aria-hidden="true" width="0" height="0" style="position: absolute;">
+    <defs>
+      <filter id="woodgrain"><feTurbulence type="fractalNoise" baseFrequency="0.004 0.09" numOctaves="3" seed="7"></feTurbulence><feColorMatrix type="matrix" values="0 0 0 0 0.12  0 0 0 0 0.06  0 0 0 0 0.02  0 0 0 0.9 0"></feColorMatrix></filter>
+      <filter id="paper"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="2"></feTurbulence><feColorMatrix type="matrix" values="0 0 0 0 0.45  0 0 0 0 0.3  0 0 0 0 0.12  0 0 0 0.35 0"></feColorMatrix></filter>
+      <filter id="blotch"><feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="4" seed="11"></feTurbulence><feColorMatrix type="matrix" values="0 0 0 0 0.5  0 0 0 0 0.33  0 0 0 0 0.12  0 0 0 0.55 -0.12"></feColorMatrix></filter>
+    </defs>
+  </svg>
+
+  <svg aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%;"><rect width="100%" height="100%" filter="url(#woodgrain)"></rect></svg>
+  <div aria-hidden="true" style="position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 358px, rgba(0,0,0,.55) 358px 361px, rgba(255,200,140,.05) 361px 363px);"></div>
+  <div aria-hidden="true" style="position: absolute; inset: 0; background: radial-gradient(ellipse 90% 85% at 50% 50%, transparent 45%, rgba(0,0,0,.78) 100%);"></div>
+
+
+  <svg aria-hidden="true" viewBox="0 0 200 200" style="position: absolute; right: 6px; bottom: 0px; width: 200px; height: 200px; opacity: .95;">
+    <ellipse cx="110" cy="176" rx="46" ry="10" fill="#000" opacity=".45"></ellipse>
+    <path d="M78 120 C76 150 80 172 110 174 C140 172 144 150 142 120 Z" fill="#1d1a24"></path>
+    <ellipse cx="110" cy="120" rx="32" ry="8" fill="#2e2a38"></ellipse>
+    <ellipse cx="110" cy="120" rx="22" ry="5" fill="#07060a"></ellipse>
+    <path d="M114 118 C130 60 160 20 196 4 C178 34 156 70 118 120 Z" fill="#eadfca"></path>
+    <path d="M118 120 C140 80 170 36 196 4" stroke="#a89880" stroke-width="1.2" fill="none"></path>
+  </svg>
+
+  <div style="position: relative; max-width: 1260px; margin: 64px auto 70px; padding: 22px; box-sizing: border-box; background: radial-gradient(ellipse at 50% 35%, #74301d, #4f1b10 65%, #2f0e07); border-radius: 16px; box-shadow: 0 40px 80px rgba(0,0,0,.75), inset 0 0 0 3px #2a0b05, inset 0 0 60px rgba(0,0,0,.55);">
+    <div aria-hidden="true" style="position: absolute; inset: 9px; border: 2px dashed rgba(222,176,112,.45); border-radius: 11px; pointer-events: none;"></div>
+
+    <svg aria-hidden="true" viewBox="0 0 80 80" style="position: absolute; left: -6px; top: -6px; width: 80px; height: 80px; z-index: 3;"><path d="M0 0 H80 C56 6 40 14 30 30 C14 40 6 56 0 80 Z" fill="#b98d3e" stroke="#6b4a1a" stroke-width="2"></path><path d="M10 10 H56 C42 14 30 22 22 34 C16 40 12 48 10 56 Z" fill="none" stroke="#e8c47a" stroke-width="1.4"></path><circle cx="16" cy="16" r="4" fill="#e8c47a" stroke="#6b4a1a"></circle></svg>
+    <svg aria-hidden="true" viewBox="0 0 80 80" style="position: absolute; right: -6px; top: -6px; width: 80px; height: 80px; z-index: 3; transform: scaleX(-1);"><path d="M0 0 H80 C56 6 40 14 30 30 C14 40 6 56 0 80 Z" fill="#b98d3e" stroke="#6b4a1a" stroke-width="2"></path><path d="M10 10 H56 C42 14 30 22 22 34 C16 40 12 48 10 56 Z" fill="none" stroke="#e8c47a" stroke-width="1.4"></path><circle cx="16" cy="16" r="4" fill="#e8c47a" stroke="#6b4a1a"></circle></svg>
+    <svg aria-hidden="true" viewBox="0 0 80 80" style="position: absolute; left: -6px; bottom: -6px; width: 80px; height: 80px; z-index: 3; transform: scaleY(-1);"><path d="M0 0 H80 C56 6 40 14 30 30 C14 40 6 56 0 80 Z" fill="#b98d3e" stroke="#6b4a1a" stroke-width="2"></path><path d="M10 10 H56 C42 14 30 22 22 34 C16 40 12 48 10 56 Z" fill="none" stroke="#e8c47a" stroke-width="1.4"></path><circle cx="16" cy="16" r="4" fill="#e8c47a" stroke="#6b4a1a"></circle></svg>
+    <svg aria-hidden="true" viewBox="0 0 80 80" style="position: absolute; right: -6px; bottom: -6px; width: 80px; height: 80px; z-index: 3; transform: scale(-1,-1);"><path d="M0 0 H80 C56 6 40 14 30 30 C14 40 6 56 0 80 Z" fill="#b98d3e" stroke="#6b4a1a" stroke-width="2"></path><path d="M10 10 H56 C42 14 30 22 22 34 C16 40 12 48 10 56 Z" fill="none" stroke="#e8c47a" stroke-width="1.4"></path><circle cx="16" cy="16" r="4" fill="#e8c47a" stroke="#6b4a1a"></circle></svg>
+
+    <div style="position: absolute; right: -40px; top: 110px; display: flex; flex-direction: column; gap: 6px; z-index: 0;">
+      <button class="ribbon" style="background: #9c1f1a; margin-right: -14px; box-shadow: 4px 4px 8px rgba(0,0,0,.5);">Active</button>
+      <button class="ribbon" style="background: #24474f;">On hold</button>
+      <button class="ribbon" style="background: #8a6a1e;">Fulfilled</button>
+      <button class="ribbon" style="background: #4a423c;">Archive</button>
+    </div>
+
+    <div style="position: relative; z-index: 1; display: flex; flex-wrap: wrap;">
+
+      <section style="position: relative; flex: 1 1 520px; min-width: 0; min-height: 740px; padding: 46px 52px 40px 60px; box-sizing: border-box; background: radial-gradient(ellipse at 40% 30%, #f5e8c8, #ead6a8 55%, #d4b47a 100%); border-radius: 8px 2px 2px 8px; box-shadow: -3px 0 0 #e9d8ad, -5px 1px 0 #c7a96f, -7px 1px 0 #e4cf9c, -9px 2px 0 #b8975c, -12px 4px 10px rgba(0,0,0,.4);">
+        <svg aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;"><rect width="100%" height="100%" filter="url(#blotch)"></rect><rect width="100%" height="100%" filter="url(#paper)"></rect></svg>
+        <div aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(to left, rgba(70,35,8,.45), rgba(70,35,8,.12) 40px, transparent 90px); pointer-events: none;"></div>
+
+        <div style="position: relative; text-align: center;">
+          <p style="margin: 0; font-style: italic; font-size: 16px; color: #7a5a34;">Being the true chronicle of the company</p>
+          <h1 style="margin: 4px 0 0; font-family: 'Cinzel Decorative', serif; font-size: 46px; font-weight: 700; color: #5e1a10; letter-spacing: .02em;">Quest Log</h1>
+          <svg aria-hidden="true" viewBox="0 0 300 24" style="width: 300px; height: 24px; margin-top: 4px;"><path d="M10 12 H120 M180 12 H290" stroke="#7a4a1e" stroke-width="1.2"></path><path d="M120 12 C130 2 140 2 144 12 C140 20 130 20 120 12 Z M180 12 C170 2 160 2 156 12 C160 20 170 20 180 12 Z" fill="none" stroke="#7a4a1e" stroke-width="1.2"></path><path d="M150 3 L158 12 L150 21 L142 12 Z" fill="#9c1f1a"></path><circle cx="10" cy="12" r="2.5" fill="#7a4a1e"></circle><circle cx="290" cy="12" r="2.5" fill="#7a4a1e"></circle></svg>
+        </div>
+
+        <div style="position: relative; display: flex; justify-content: space-between; align-items: center; margin: 22px 0 10px;">
+          <h2 style="margin: 0; font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: #9c1f1a;">Active quests · 4</h2>
+          <button class="inkbtn" style="background: #7d1a14; color: #f6e2b8; border-color: #4e0e09; box-shadow: inset 0 0 0 1px rgba(255,210,150,.25);">
+            <svg aria-hidden="true" viewBox="0 0 24 24" style="width: 16px; height: 16px;" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4c-7 0-12 5-14 12l-2 4"></path><path d="M20 4c0 6-4 11-11 12"></path><path d="M9 14l5-5"></path></svg>
+            Inscribe a quest
+          </button>
+        </div>
+
+        <div style="position: relative; display: flex; flex-direction: column; gap: 2px;">
+          <button class="qrow" style="background: rgba(156,31,26,.10); box-shadow: inset 0 0 0 1px rgba(156,31,26,.35);">
+            <svg aria-hidden="true" viewBox="0 0 20 20" style="width: 18px; height: 18px; flex: none; margin-top: 3px;"><path d="M10 1 L19 10 L10 19 L1 10 Z" fill="#9c1f1a" stroke="#4e0e09"></path><path d="M10 5 L15 10 L10 15 L5 10 Z" fill="#e05a3a"></path></svg>
+            <span style="flex: 1; min-width: 0;"><span style="display: block; font-family: 'Cinzel', serif; font-weight: 700; font-size: 18px; color: #3a1608;">The Ashen Reliquary</span><span style="display: block; font-style: italic; font-size: 15px; color: #6e5030;">Session XII · from Sister Velka · Harrowmere Abbey</span></span>
+            <svg aria-hidden="true" viewBox="0 0 24 24" style="width: 18px; height: 18px; flex: none; margin-top: 4px; color: #9c1f1a;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"></path></svg>
+          </button>
+          <button class="qrow">
+            <svg aria-hidden="true" viewBox="0 0 20 20" style="width: 18px; height: 18px; flex: none; margin-top: 3px;"><path d="M10 1 L19 10 L10 19 L1 10 Z" fill="#9c1f1a" stroke="#4e0e09"></path><path d="M10 5 L15 10 L10 15 L5 10 Z" fill="#e05a3a"></path></svg>
+            <span style="flex: 1; min-width: 0;"><span style="display: block; font-family: 'Cinzel', serif; font-weight: 700; font-size: 18px; color: #3a1608;">Whispers Beneath Harrowmere</span><span style="display: block; font-style: italic; font-size: 15px; color: #6e5030;">Session XI · from Old Marrow the ferryman</span></span>
+          </button>
+          <button class="qrow" style="opacity: .8;">
+            <svg aria-hidden="true" viewBox="0 0 24 24" style="width: 18px; height: 18px; flex: none; margin-top: 3px; color: #7a3a14;" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+            <span style="flex: 1; min-width: 0;"><span style="display: block; font-family: 'Cinzel', serif; font-weight: 700; font-size: 18px; color: #3a1608;">A Debt to the Gilded Fox</span><span style="display: block; font-style: italic; font-size: 15px; color: #8a2a12;">Mira is penning changes to this page…</span></span>
+          </button>
+          <button class="qrow">
+            <svg aria-hidden="true" viewBox="0 0 20 20" style="width: 18px; height: 18px; flex: none; margin-top: 3px;"><path d="M10 1 L19 10 L10 19 L1 10 Z" fill="#9c1f1a" stroke="#4e0e09"></path><path d="M10 5 L15 10 L10 15 L5 10 Z" fill="#e05a3a"></path></svg>
+            <span style="flex: 1; min-width: 0;"><span style="display: block; font-family: 'Cinzel', serif; font-weight: 700; font-size: 18px; color: #3a1608;">The Wolves of Thornwick Pass</span><span style="display: block; font-style: italic; font-size: 15px; color: #6e5030;">Session IX · from Captain Hale</span></span>
+          </button>
+        </div>
+
+        <h2 style="position: relative; margin: 22px 0 6px; font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: #24474f;">On hold · 1</h2>
+        <button class="qrow" style="position: relative;">
+          <svg aria-hidden="true" viewBox="0 0 20 20" style="width: 18px; height: 18px; flex: none; margin-top: 3px;"><path d="M10 1 L19 10 L10 19 L1 10 Z" fill="none" stroke="#24474f" stroke-width="2"></path></svg>
+          <span style="flex: 1; min-width: 0;"><span style="display: block; font-family: 'Cinzel', serif; font-weight: 700; font-size: 18px; color: #2f3e3c;">A Lantern for the Lost Shepherd</span><span style="display: block; font-style: italic; font-size: 15px; color: #5a6460;">Session VII · from the widow Breck</span></span>
+        </button>
+
+        <h2 style="position: relative; margin: 22px 0 6px; font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: #7a5a1e;">Fulfilled · 2</h2>
+        <div style="position: relative; display: flex; flex-direction: column; gap: 2px;">
+          <button class="qrow">
+            <svg aria-hidden="true" viewBox="0 0 24 24" style="width: 20px; height: 20px; flex: none; margin-top: 2px;"><circle cx="12" cy="12" r="10" fill="#8a6a1e"></circle><path d="M7 12l3.5 3.5L17 9" stroke="#f6e7c4" stroke-width="2.2" fill="none" stroke-linecap="round"></path></svg>
+            <span style="flex: 1; min-width: 0;"><span style="display: block; font-family: 'Cinzel', serif; font-weight: 700; font-size: 18px; color: #6e5a3a; text-decoration: line-through; text-decoration-color: #9c1f1a;">The Ninth Bell</span><span style="display: block; font-style: italic; font-size: 15px; color: #7a6a4e;">Session V · from Abbot Corran</span></span>
+          </button>
+          <button class="qrow">
+            <svg aria-hidden="true" viewBox="0 0 24 24" style="width: 20px; height: 20px; flex: none; margin-top: 2px;"><circle cx="12" cy="12" r="10" fill="#8a6a1e"></circle><path d="M7 12l3.5 3.5L17 9" stroke="#f6e7c4" stroke-width="2.2" fill="none" stroke-linecap="round"></path></svg>
+            <span style="flex: 1; min-width: 0;"><span style="display: block; font-family: 'Cinzel', serif; font-weight: 700; font-size: 18px; color: #6e5a3a; text-decoration: line-through; text-decoration-color: #9c1f1a;">Salt for the Harbourmaster</span><span style="display: block; font-style: italic; font-size: 15px; color: #7a6a4e;">Session III · from Dagny Holt</span></span>
+          </button>
+        </div>
+
+        <p style="position: relative; margin: 30px 0 0; text-align: center; font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: .2em; color: #8a6a44;">— vi —</p>
+      </section>
+
+      <section style="position: relative; flex: 1 1 520px; min-width: 0; min-height: 740px; padding: 46px 60px 40px 52px; box-sizing: border-box; background: radial-gradient(ellipse at 60% 30%, #f5e8c8, #ead6a8 55%, #d4b47a 100%); border-radius: 2px 8px 8px 2px; box-shadow: 3px 0 0 #e9d8ad, 5px 1px 0 #c7a96f, 7px 1px 0 #e4cf9c, 9px 2px 0 #b8975c, 12px 4px 10px rgba(0,0,0,.4);">
+        <svg aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;"><rect width="100%" height="100%" filter="url(#blotch)"></rect><rect width="100%" height="100%" filter="url(#paper)"></rect></svg>
+        <div aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(70,35,8,.45), rgba(70,35,8,.12) 40px, transparent 90px); pointer-events: none;"></div>
+
+        <div style="position: relative; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;">
+          <div>
+            <p style="margin: 0; font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: .22em; text-transform: uppercase; color: #9c1f1a;">Quest the twelfth</p>
+            <h2 style="margin: 6px 0 0; font-family: 'Cinzel Decorative', serif; font-size: 36px; line-height: 1.1; color: #3a1608;">The Ashen Reliquary</h2>
+          </div>
+          <svg role="img" aria-label="Active" viewBox="0 0 90 90" style="width: 84px; height: 84px; flex: none; transform: rotate(-8deg); margin-top: -10px;">
+            <path d="M45 3 C55 6 60 2 66 8 C74 12 80 14 82 24 C88 32 86 40 87 46 C88 56 82 62 80 70 C74 78 66 80 58 85 C50 88 40 88 32 84 C22 82 16 76 10 68 C4 60 4 52 3 44 C4 34 8 26 14 18 C22 10 32 4 45 3 Z" fill="#9c1f1a"></path>
+            <circle cx="45" cy="45" r="30" fill="none" stroke="#6e120d" stroke-width="2"></circle>
+            <circle cx="45" cy="45" r="26" fill="#b02822"></circle>
+            <path d="M45 26 L50 40 L64 40 L53 49 L57 63 L45 54 L33 63 L37 49 L26 40 L40 40 Z" fill="#6e120d"></path>
+            <text x="45" y="80" text-anchor="middle" font-family="Cinzel, serif" font-size="9" fill="#f6d8b0" letter-spacing="2">ACTIVE</text>
+          </svg>
+        </div>
+
+        <div style="position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; row-gap: 6px; margin: 20px 0 22px; font-size: 16px;">
+          <div style="display: flex; gap: 6px; align-items: baseline;"><span style="font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #7a5a34;">Received</span><span aria-hidden="true" style="flex: 1; border-bottom: 1.5px dotted #a8885a;"></span><span>3 October 2026</span></div>
+          <div style="display: flex; gap: 6px; align-items: baseline;"><span style="font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #7a5a34;">Session</span><span aria-hidden="true" style="flex: 1; border-bottom: 1.5px dotted #a8885a;"></span><span>XII</span></div>
+          <div style="display: flex; gap: 6px; align-items: baseline;"><span style="font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #7a5a34;">Given by</span><span aria-hidden="true" style="flex: 1; border-bottom: 1.5px dotted #a8885a;"></span><span>Sister Velka</span></div>
+          <div style="display: flex; gap: 6px; align-items: baseline;"><span style="font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #7a5a34;">Received at</span><span aria-hidden="true" style="flex: 1; border-bottom: 1.5px dotted #a8885a;"></span><span>The Crooked Lantern</span></div>
+          <div style="display: flex; gap: 6px; align-items: baseline; grid-column: 1 / -1;"><span style="font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #7a5a34;">Quest location</span><span aria-hidden="true" style="flex: 1; border-bottom: 1.5px dotted #a8885a;"></span><span>The flooded crypt beneath Harrowmere Abbey</span></div>
+        </div>
+
+        <div style="position: relative; font-size: 18px; line-height: 1.6; color: #2b1a0c;">
+          <div aria-hidden="true" style="float: left; width: 74px; height: 74px; margin: 6px 12px 0 0; background: #7d1a14; border: 3px double #c9a04a; box-sizing: border-box; display: flex; align-items: center; justify-content: center; position: relative;">
+            <svg viewBox="0 0 74 74" style="position: absolute; inset: 0; width: 100%; height: 100%;"><path d="M6 66 C14 50 10 36 22 30 C14 22 18 10 30 8 M68 8 C60 24 64 38 52 44 C60 52 56 64 44 66" stroke="#c9a04a" stroke-width="1.2" fill="none" opacity=".7"></path><circle cx="30" cy="8" r="2" fill="#c9a04a"></circle><circle cx="44" cy="66" r="2" fill="#c9a04a"></circle></svg>
+            <span style="position: relative; font-family: 'Cinzel Decorative', serif; font-size: 50px; line-height: 1; color: #f2cf7a;">S</span>
+          </div>
+          <p style="margin: 0 0 12px;">ister Velka of the Dawnfire begs the company recover the <span style="color: #8a2a12; font-style: italic;">Ashen Reliquary</span> from the flooded crypt beneath Harrowmere Abbey before the Hollow Choir lays hands upon it.</p>
+          <p style="margin: 0;">She warns that the lower vaults drown at every high tide, and that the bells in the old tower ring of their own accord when the dead are restless.</p>
+        </div>
+
+        <div style="position: relative; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: flex-end; gap: 18px; margin-top: 28px;">
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end;">
+            <button class="inkbtn" style="background: #7d1a14; color: #f6e2b8; border-color: #4e0e09;">
+              <svg aria-hidden="true" viewBox="0 0 24 24" style="width: 16px; height: 16px;" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4c-7 0-12 5-14 12l-2 4"></path><path d="M20 4c0 6-4 11-11 12"></path><path d="M9 14l5-5"></path></svg>
+              Amend
+            </button>
+            <button class="inkbtn">Mark fulfilled</button>
+            <button class="inkbtn">Set aside</button>
+            <button class="inkbtn">Archive</button>
+          </div>
+        </div>
+
+        <p style="position: relative; margin: 18px 0 0; font-style: italic; font-size: 14px; color: #7a5a34; text-align: right;">Last amended by Tamsin, two hours past</p>
+      </section>
+    </div>
+
+    <svg aria-hidden="true" viewBox="0 0 40 160" style="position: absolute; left: 50%; bottom: -120px; width: 30px; height: 150px; margin-left: 30px; z-index: 2;"><path d="M6 0 H34 V140 L20 126 L6 140 Z" fill="#9c1f1a"></path><path d="M10 0 V132 M30 0 V132" stroke="#c9483a" stroke-width="1" opacity=".6"></path></svg>
+  </div>
+</div>
+</body>
+</html>
