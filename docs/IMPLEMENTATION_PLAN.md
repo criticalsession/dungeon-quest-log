@@ -597,7 +597,7 @@ services:
     build: ./app
     container_name: dungeon-quest-log
     ports:
-      - "${QUESTLOG_PORT:-8080}:80"
+      - "${QUESTLOG_PORT:-47218}:80"
     restart: unless-stopped
 ```
 
@@ -605,13 +605,13 @@ services:
 
 **`run.bat`** must:
 1. `cd /d "%~dp0"`.
-2. Check Docker with `docker info >nul 2>&1`. If that fails, try to start Docker Desktop (`"%ProgramFiles%\Docker\Docker\Docker Desktop.exe"`) and wait up to about 90 s, polling `docker info` every 3 s. If Docker is still unavailable, print a clear message and `pause`.
+2. Check Docker with `docker info >nul 2>&1`. If that fails, print a clear message (start Docker Desktop and run again) and `pause`. Don't try to start Docker.
 3. Run `docker compose up -d --build`. If it fails, print the error and `pause`.
 4. Wait for the page, polling up to about 30 s with PowerShell:
-   `powershell -NoProfile -Command "for($i=0;$i -lt 30;$i++){try{Invoke-WebRequest -UseBasicParsing http://localhost:8080 -TimeoutSec 2 | Out-Null; exit 0}catch{Start-Sleep 1}}; exit 1"`
-5. Open the browser with `start "" http://localhost:8080`.
+   `powershell -NoProfile -Command "for($i=0;$i -lt 30;$i++){try{Invoke-WebRequest -UseBasicParsing http://localhost:%QUESTLOG_PORT% -TimeoutSec 2 | Out-Null; exit 0}catch{Start-Sleep 1}}; exit 1"`
+5. Open the browser with `start "" http://localhost:%QUESTLOG_PORT%`.
 
-The port honours `QUESTLOG_PORT` if set.
+The port is `QUESTLOG_PORT` in the root `.env` file (committed, default 47218). Docker Compose reads that file itself, and `run.bat` parses it to open the right URL. Players change it there if the port is taken.
 
 **`stop.bat`:** `docker compose down`.
 

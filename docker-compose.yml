@@ -3,5 +3,5 @@ services:
     build: ./app
     container_name: dungeon-quest-log
     ports:
-      - "${QUESTLOG_PORT:-8080}:80"
+      - "${QUESTLOG_PORT:-47218}:80"
     restart: unless-stopped

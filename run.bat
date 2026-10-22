@@ -1,30 +1,23 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-if "%QUESTLOG_PORT%"=="" set QUESTLOG_PORT=8080
+
+rem Port comes from .env (QUESTLOG_PORT=...), which docker compose reads too.
+set QUESTLOG_PORT=47218
+for /f "usebackq eol=# tokens=1,* delims==" %%a in (".env") do if "%%a"=="QUESTLOG_PORT" set QUESTLOG_PORT=%%b
 
 docker info >nul 2>&1
-if not errorlevel 1 goto docker_ready
+if errorlevel 1 (
+  echo Docker is not running. Please start Docker Desktop, then run this again.
+  pause
+  exit /b 1
+)
 
-echo Docker is not running. Trying to start Docker Desktop...
-start "" "%ProgramFiles%\Docker\Docker\Docker Desktop.exe"
-set /a tries=0
-:wait_docker
-timeout /t 3 /nobreak >nul
-docker info >nul 2>&1
-if not errorlevel 1 goto docker_ready
-set /a tries+=1
-if %tries% lss 30 goto wait_docker
-echo.
-echo Docker is not available. Please install or start Docker Desktop, then run this again.
-pause
-exit /b 1
-
-:docker_ready
 docker compose up -d --build
 if errorlevel 1 (
   echo.
   echo Could not build or start the quest log. See the error above.
+  echo If the port is in use, change QUESTLOG_PORT in the .env file.
   pause
   exit /b 1
 )
