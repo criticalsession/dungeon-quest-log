@@ -688,7 +688,7 @@ Two layers, so the screen is always full and the book is never cropped:
 | Small-caps labels | 17px |
 | Row titles | 26px |
 | Quest title | 52px |
-| "Quest Log" header | 64px |
+| "Dungeon Quest Log" header | 64px |
 | Buttons | 17px |
 
 ### 9.3 Fonts (Solbera's D&D 5e fonts, CC BY-SA 4.0)
@@ -767,7 +767,7 @@ Put the licence credit in `CREDITS.md` (section 11).
 
 ### 9.6 Page furniture
 
-- **Left page header:** the italic line "Being the true chronicle of the company", then **"Quest Log"** in Nodesto 64px `--ink-title`, then the **flourish divider**: a horizontal line with curls and a crimson diamond centre (copy the SVG from the mockup, recoloured with tokens). Below that, a row with the group or filter title on the left and **Inscribe a quest** on the right.
+- **Left page header:** the italic line "Being the true chronicles of The Boys in Amael", then **"Dungeon Quest Log"** in Nodesto 64px `--ink-title`, then the **flourish divider**: a horizontal line with curls and a crimson diamond centre (copy the SVG from the mockup, recoloured with tokens). Below that, a row with the group or filter title on the left and **Inscribe a quest** on the right.
 - **Wax seal:** an SVG blob with a ring and a star, from the mockup. Fill follows the status colour, and the label sits at the bottom in Mr Eaves. 88 px, rotated -8°.
 - **Drop cap:** `.description > p:first-of-type::first-letter`:
   - `float: left`, `font-family: 'Solbera Imitation'`, `font-size: 4.1em`, `line-height: .9`
@@ -812,7 +812,7 @@ Put the licence credit in `CREDITS.md` (section 11).
 | Footer | Last amended by {name}, {relative time} |
 | Login heading (right page) | Who goes there? |
 | Login button | Open the book |
-| Login left page | "Quest Log" + "Being the true chronicle of the company" |
+| Login left page | "Dungeon Quest Log" + "Being the true chronicles of The Boys in Amael" |
 | Field labels | Received · Session · Given by · Received at · Quest location |
 | Title placeholder | Name this quest |
 | Description placeholder | Write what the party learned… |
