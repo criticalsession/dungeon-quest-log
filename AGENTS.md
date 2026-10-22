@@ -27,6 +27,7 @@ All app commands run from `app/`.
 | Tests | `npm test` (vitest; `lib/ordinal.ts` has its tests) |
 | Run the real thing | double-click `run.bat` (Docker Desktop must already be running) |
 | Stop | `stop.bat` |
+| Player demo video | see `tools/demo/README.md` (fakes Supabase in the browser; output goes to the ignored `demo/`) |
 
 ### Windows gotchas
 
