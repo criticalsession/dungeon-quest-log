@@ -76,11 +76,6 @@
   clip-path: none;
   box-shadow: none;
   border-radius: 4px;
-  opacity: .8;
 }
-.stage-narrow .ribbon:hover { opacity: 1; }
-.stage-narrow .ribbon[aria-selected='true'] {
-  opacity: 1;
-  box-shadow: 0 0 0 2px var(--parchment);
-}
+.stage-narrow .ribbon[aria-selected='true'] { box-shadow: 0 0 0 2px var(--parchment); }
 .stage-narrow .ribbon:focus-visible { outline-offset: 2px; outline-color: var(--parchment); }

@@ -53,9 +53,14 @@ export function Stage() {
   // In the single column the quest sits below the list, so opening one brings it into view.
   useLayoutEffect(() => {
     if (!narrow) return
-    const right = document.querySelector('.stage-narrow .page-right')
-    if (/^\/(quest|new)/.test(pathname)) right?.scrollIntoView({ block: 'start' })
-    else document.querySelector('.stage-narrow')?.scrollTo({ top: 0 })
+    const scroll = () => {
+      if (/^\/(quest|new)/.test(pathname)) document.querySelector('.stage-narrow .page-right')?.scrollIntoView({ block: 'start' })
+      else document.querySelector('.stage-narrow')?.scrollTo({ top: 0 })
+    }
+    scroll()
+    // The editor takes its content a moment later (it waits for the lock), which would leave the page short at first.
+    const later = setTimeout(scroll, 300)
+    return () => clearTimeout(later)
   }, [narrow, pathname])
 
   return (
