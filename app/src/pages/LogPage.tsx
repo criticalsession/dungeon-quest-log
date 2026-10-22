@@ -5,7 +5,7 @@ import { QuestList } from '../components/QuestList'
 import { Ribbons, TABS } from '../components/Ribbons'
 import { SealedArchiveNotice } from '../components/SealedArchiveNotice'
 import { closeTheBook } from '../lib/auth'
-import { useQuests, type Tab } from '../store/quests'
+import { groupsForTab, useQuests, type Tab } from '../store/quests'
 
 const parseTab = (value: string | null): Tab => TABS.find((t) => t.id === value)?.id ?? 'all'
 
@@ -25,7 +25,12 @@ export function LogPage() {
 
   // A ribbon is a filter, not a navigation: it replaces the history entry and keeps the path.
   function selectTab(next: Tab) {
-    setParams(next === 'all' ? {} : { tab: next }, { replace: true })
+    const search = next === 'all' ? '' : `?tab=${next}`
+    // An open quest that isn't in the new filter is closed. (The editor is left alone: its draft matters more.)
+    const stillListed =
+      !selectedId || groupsForTab(useQuests.getState().quests, next).some((g) => g.quests.some((q) => q.id === selectedId))
+    if (stillListed) setParams(next === 'all' ? {} : { tab: next }, { replace: true })
+    else navigate(`/${search}`, { replace: true })
   }
 
   async function onClose() {
