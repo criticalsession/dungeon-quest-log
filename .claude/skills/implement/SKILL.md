@@ -36,7 +36,8 @@ Build one phase of the quest log. The phase number is `$ARGUMENTS`.
 
 - **Already done?** If the status is "Done", say so and ask whether to redo or extend it. Don't redo it silently.
 - **Earlier phases unfinished?** If a lower-numbered phase isn't Done, name it and ask whether to build that first or continue anyway. Phases build on each other (for example, 4 needs the schema from 2 and the login from 3).
-- **Git:** run `git status` and `git branch --show-current`. If there are uncommitted changes that aren't yours, ask. If the current branch is `main`, ask which branch to use rather than committing to it. Never push.
+- **Git:** run `git status` and `git branch --show-current`. If there are uncommitted changes that aren't yours, ask. Never push.
+- **Branch:** never work on `main`. Create a new branch named `feat/phase-N-<short-name>` (for example `feat/phase-4-read-path`) with `git switch -c`, and do all the work and the commit on it. If the current branch is `main`, branch from it. If it is another branch, ask whether to branch from it or from `main`. If a branch for this phase already exists, ask whether to continue on it or start a fresh one.
 - **Needs the owner?** Phases 2 onward depend on a real Supabase project (plan section 5 and 12). If `app/.env` still has placeholder values, build everything that doesn't need it, and list exactly what the owner must do to verify the rest. Never invent keys, passwords or project URLs, and never put secrets in the repo (it is public).
 
 ## 4. Implement
@@ -63,11 +64,12 @@ Check against the phase's "Done when" line and the acceptance items it covers. U
 
 ## 7. Commit
 
-Commit locally once the phase builds and the docs are updated, with a message like `Phase N: <name>` and a short body. Use the commit trailer given in the session instructions. Do not push, and do not open a PR unless asked.
+Commit locally, on the phase branch, once the phase builds and the docs are updated, with a message like `Phase N: <name>` and a short body. Use the commit trailer given in the session instructions. Do not push, and do not open a PR unless asked.
 
 ## 8. Report
 
 End with a short report:
+- The branch name the work is on.
 - What was built.
 - What was verified, and how.
 - What was **not** verified, and why.
