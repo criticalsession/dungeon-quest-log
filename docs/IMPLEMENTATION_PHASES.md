@@ -10,5 +10,5 @@ Summary of the build order in `IMPLEMENTATION_PLAN.md` (section 10). Commit afte
 | 4 | **Read path** | Store, initial load, quest list with ribbons and grouping, quest view, empty and sealed states | Done |
 | 5 | **Write path** | Create, amend (Tiptap), status buttons, archive and unarchive, all via RPC | Done |
 | 6 | **Locks** | Edit locks: acquire, heartbeat, release, lock display, lock-lost handling, unsaved-changes dialog | Done |
-| 7 | **Live sync** | Realtime subscription, refetch on reconnect and visibility, toasts, connection banner | Not started |
+| 7 | **Live sync** | Realtime subscription, refetch on reconnect and visibility, toasts, connection banner | Done (not yet tried with two browsers) |
 | 8 | **Polish** | Narrow-screen fallback, keyboard navigation, reduced motion, `CREDITS.md`, player README | Not started |

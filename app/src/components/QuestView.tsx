@@ -89,7 +89,7 @@ function QuestActions({ quest }: { quest: Quest }) {
   )
 }
 
-export function QuestView({ quest }: { quest: Quest }) {
+export function QuestView({ quest, archivedBy }: { quest: Quest; archivedBy?: string | null }) {
   const now = useNow(60_000)
   const html = useMemo(() => sanitizeHtml(quest.description), [quest.description])
 
@@ -110,6 +110,7 @@ export function QuestView({ quest }: { quest: Quest }) {
         </div>
         <WaxSeal status={quest.status} archived={quest.archived} />
       </header>
+      {archivedBy && <p className="lock-note" role="status">Archived by {archivedBy}.</p>}
       {rows.length > 0 && <dl className="ledger">{rows}</dl>}
       {html && <div className="description" dangerouslySetInnerHTML={{ __html: html }} />}
       <QuestActions quest={quest} />

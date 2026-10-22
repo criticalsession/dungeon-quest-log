@@ -1,5 +1,6 @@
 import { useQuests, type Quest, type QuestStatus } from '../store/quests'
 import { getClientId } from './clientId'
+import { trackOwnWrite } from './realtime'
 import { getAccessToken, supabase } from './supabase'
 
 export type QuestErrorCode = 'QUEST_LOCKED' | 'LOCK_NOT_HELD' | 'NOT_AUTHENTICATED' | 'NETWORK' | 'OTHER'
@@ -29,7 +30,7 @@ async function call<T>(fn: string, args: Record<string, unknown>): Promise<T> {
 
 /** Apply a row the database just returned, so this tab is right before the realtime event arrives. */
 async function callQuest(fn: string, args: Record<string, unknown>): Promise<Quest> {
-  const quest = await call<Quest>(fn, args)
+  const quest = await trackOwnWrite(() => call<Quest>(fn, args))
   useQuests.getState().upsertQuest(quest)
   return quest
 }

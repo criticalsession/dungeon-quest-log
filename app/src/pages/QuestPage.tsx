@@ -18,6 +18,7 @@ import {
 import { supabase } from '../lib/supabase'
 import { useUnsavedGuard } from '../lib/useUnsavedGuard'
 import { useQuests, type Quest } from '../store/quests'
+import { useToasts } from '../store/toasts'
 
 const SAVE_FAILED = 'Your words could not reach the archive. Try again.'
 
@@ -59,8 +60,23 @@ export function EmptyQuestPage() {
 export function QuestPage() {
   const { id } = useParams()
   const quest = useQuests((s) => (id ? s.quests[id] : undefined))
+  // Someone else archiving the quest while it is open leaves it open, with a note (plan 7.4).
+  const wasArchived = useRef(quest?.archived)
+  const [archivedBy, setArchivedBy] = useState<string | null>(null)
+  useEffect(() => setArchivedBy(null), [id])
+  useEffect(() => {
+    if (quest && !wasArchived.current && quest.archived && quest.updated_by_name !== getActiveName()) {
+      setArchivedBy(quest.updated_by_name)
+    }
+    if (!quest?.archived) setArchivedBy(null)
+    wasArchived.current = quest?.archived
+  }, [quest])
 
-  return <section className="page page-right">{quest ? <QuestView quest={quest} /> : <NotFound />}</section>
+  return (
+    <section className="page page-right">
+      {quest ? <QuestView quest={quest} archivedBy={archivedBy} /> : <NotFound />}
+    </section>
+  )
 }
 
 /** Right page for `#/new`. Nothing exists yet, so there is no lock to take. */
@@ -168,14 +184,19 @@ export function EditQuestPage() {
           const { data } = await supabase.from('quest_locks').select('holder_name').eq('quest_id', id).maybeSingle()
           message = `${data?.holder_name ?? 'Someone'} is already penning changes to this quest.`
         }
-        if (!cancelled) setState({ kind: 'locked', message })
+        if (cancelled) return
+        if (message.endsWith('to this quest.')) {
+          // Plan 7.6: back to the quest view with a toast.
+          useToasts.getState().push({ before: message })
+          navigate(`/quest/${id}${search}`, { replace: true })
+        } else setState({ kind: 'locked', message })
       },
     )
     return () => {
       cancelled = true
       if (!sealed.current) releaseLock(id).catch(() => undefined)
     }
-  }, [id, exists])
+  }, [id, exists, navigate, search])
 
   if (!id || !exists) {
     return (

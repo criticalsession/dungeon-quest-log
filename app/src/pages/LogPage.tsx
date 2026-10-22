@@ -6,6 +6,7 @@ import { QuestList } from '../components/QuestList'
 import { Ribbons, TABS } from '../components/Ribbons'
 import { SealedArchiveNotice } from '../components/SealedArchiveNotice'
 import { closeTheBook } from '../lib/auth'
+import { startRealtime } from '../lib/realtime'
 import { clearUnsaved, hasUnsaved } from '../lib/useUnsavedGuard'
 import { groupsForTab, useQuests, type Tab } from '../store/quests'
 
@@ -25,6 +26,8 @@ export function LogPage() {
   useEffect(() => {
     void load()
   }, [load])
+
+  useEffect(() => startRealtime(), [])
 
   // A ribbon is a filter, not a navigation: it replaces the history entry and keeps the path.
   function selectTab(next: Tab) {
