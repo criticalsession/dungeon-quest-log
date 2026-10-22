@@ -1,0 +1,81 @@
+/* Narrow fallback (plan 9.2): under 900 px wide, or in portrait, <Stage> drops the book image and its
+   scaling. The pages become parchment cards in one scrolling column: ribbons, the list, then the quest.
+   Sizes here are real pixels, not design pixels. */
+
+.stage.stage-narrow {
+  position: fixed;
+  inset: 0;
+  left: 0;
+  width: auto;
+  height: auto;
+  transform: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px 12px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  font-size: 19px;
+}
+.stage-narrow > * { width: 100%; max-width: 720px; flex: none; }
+
+.stage-narrow .page {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  mask-image: none;
+  padding: 20px 18px 24px;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(255, 240, 200, .35), transparent 70%),
+    linear-gradient(to bottom, var(--parchment), var(--parchment-dark));
+  border: 1px solid var(--ink-leader);
+  border-radius: 6px;
+  box-shadow: 0 10px 28px rgba(10, 5, 2, .55);
+}
+.stage-narrow .page.page-log { display: block; }
+.stage-narrow .page-foot { margin-top: 12px; }
+.stage-narrow .list-scroll { overflow: visible; mask-image: none; padding-bottom: 0; }
+.stage-narrow .empty-state { height: auto; padding: 8px 0; }
+.stage-narrow .empty-state .flourish { width: 240px; margin-bottom: 12px; }
+
+/* Smaller type */
+.stage-narrow .book-title { font-size: 40px; }
+.stage-narrow .book-subtitle, .stage-narrow .qrow-meta, .stage-narrow .quest-foot { font-size: 17px; }
+.stage-narrow .flourish { width: 220px; height: 18px; }
+.stage-narrow .page-heading { font-size: 36px; }
+.stage-narrow .quest-title, .stage-narrow .editor-title { font-size: 34px; }
+.stage-narrow .qrow-title { font-size: 22px; }
+.stage-narrow .description h2 { font-size: 28px; }
+.stage-narrow .description h3 { font-size: 24px; }
+.stage-narrow .wax-seal { width: 64px; height: 64px; }
+.stage-narrow .field input { font-size: 22px; }
+.stage-narrow .ledger-field input { font-size: 19px; }
+
+/* Rows that were side by side stack */
+.stage-narrow .list-head { flex-wrap: wrap; }
+.stage-narrow .ledger { grid-template-columns: minmax(0, 1fr); }
+.stage-narrow .ledger-wide { grid-column: auto; }
+.stage-narrow .quest-actions, .stage-narrow .editor-actions { justify-content: stretch; }
+.stage-narrow .quest-actions .btn, .stage-narrow .editor-actions .btn { flex: 1 1 auto; }
+.stage-narrow .btn { padding: 0 18px; }
+.stage-narrow .editor-content { min-height: 180px; max-height: 50vh; }
+
+/* The ribbons become a row of tabs along the top */
+.stage-narrow .ribbons { position: static; --hidden: 0px; }
+.stage-narrow .ribbons [role='tablist'] { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+.stage-narrow .ribbon {
+  --reach: 0px;
+  width: auto;
+  height: 44px;
+  padding: 0 16px;
+  font-size: 20px;
+  clip-path: none;
+  box-shadow: none;
+  border-radius: 4px;
+}
+.stage-narrow .ribbon[aria-selected='true'] { box-shadow: 0 0 0 2px var(--parchment); }
+.stage-narrow .ribbon:focus-visible { outline-offset: 2px; outline-color: var(--parchment); }

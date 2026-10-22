@@ -11,4 +11,4 @@ Summary of the build order in `IMPLEMENTATION_PLAN.md` (section 10). Commit afte
 | 5 | **Write path** | Create, amend (Tiptap), status buttons, archive and unarchive, all via RPC | Done |
 | 6 | **Locks** | Edit locks: acquire, heartbeat, release, lock display, lock-lost handling, unsaved-changes dialog | Done |
 | 7 | **Live sync** | Realtime subscription, refetch on reconnect and visibility, toasts, connection banner | Done |
-| 8 | **Polish** | Narrow-screen fallback, keyboard navigation, reduced motion, `CREDITS.md`, player README | Not started |
+| 8 | **Polish** | Narrow-screen fallback, keyboard navigation, reduced motion, `CREDITS.md`, player README | Partly done |

@@ -12,10 +12,16 @@ export const TABS: { id: Tab; label: string; colour: string }[] = [
 /** The filter tabs: silk ribbons tucked under the right cover. The selected one slides further out. */
 export function Ribbons({ tab, onSelect }: { tab: Tab; onSelect: (tab: Tab) => void }) {
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
-    const step = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0
-    if (!step) return
+    // Down/Right and Up/Left step (the narrow layout lays the ribbons out in a row); Home/End jump.
+    const at = TABS.findIndex((t) => t.id === tab)
+    let to: number
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') to = (at + 1) % TABS.length
+    else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') to = (at - 1 + TABS.length) % TABS.length
+    else if (e.key === 'Home') to = 0
+    else if (e.key === 'End') to = TABS.length - 1
+    else return
     e.preventDefault()
-    const next = TABS[(TABS.findIndex((t) => t.id === tab) + step + TABS.length) % TABS.length]
+    const next = TABS[to]
     onSelect(next.id)
     e.currentTarget.querySelector<HTMLElement>(`[data-tab="${next.id}"]`)?.focus()
   }
