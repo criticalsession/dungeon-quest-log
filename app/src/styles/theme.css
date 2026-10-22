@@ -1,0 +1,33 @@
+:root {
+  /* ink */
+  --ink:            #2b1a0c;
+  --ink-title:      #3a1608;
+  --ink-muted:      #6e5030;
+  --ink-label:      #7a5a34;
+  --ink-leader:     #a8885a;
+  --ink-warning:    #8a2a12;
+  /* accents */
+  --crimson:        #9c1f1a;
+  --crimson-deep:   #7d1a14;
+  --crimson-edge:   #4e0e09;
+  --gold:           #c9a04a;
+  --gold-bright:    #f2cf7a;
+  --on-crimson:     #f6e2b8;
+  /* status */
+  --status-active:  #9c1f1a;
+  --status-hold:    #24474f;
+  --status-done:    #8a6a1e;
+  --status-archive: #4a423c;
+  --ribbon-all:     #4b2e5a;
+  /* surfaces */
+  --parchment:      #f0e0b8;
+  --parchment-dark: #d4b47a;
+  --wash-selected:  rgba(156, 31, 26, .10);
+  --wash-hover:     rgba(120, 70, 20, .10);
+
+  /* type */
+  --font-title: Nodesto, 'Cinzel', serif;
+  --font-body: Bookinsanity, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  --font-label: 'Mr Eaves', 'Cinzel', serif;
+  --font-note: Zatanna, cursive;
+}

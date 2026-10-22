@@ -109,7 +109,7 @@ Use the latest stable version of each at implementation time.
 │  ├─ index.html
 │  ├─ package.json, tsconfig.json, vite.config.ts
 │  ├─ public/
-│  │  ├─ images/tome-background.webp   ← copy of docs/design/tome-background.webp
+│  │  ├─ images/tome-table.webp, tome-book.webp   ← copies of docs/design/
 │  │  └─ fonts/*.otf                   ← see 9.3
 │  └─ src/
 │     ├─ main.tsx, router.tsx
@@ -124,7 +124,8 @@ Use the latest stable version of each at implementation time.
 └─ docs/
    ├─ IMPLEMENTATION_PLAN.md    ← this file
    └─ design/
-      ├─ tome-background.webp   ← final background art (2000×1333)
+      ├─ tome-table.webp        ← table art, full-bleed background (2000×1333, no book)
+      ├─ tome-book.webp         ← the open book, transparent cut-out (2000×1333)
       └─ tome-mockup.html       ← static visual reference (open in a browser)
 ```
 
@@ -597,7 +598,7 @@ services:
     build: ./app
     container_name: dungeon-quest-log
     ports:
-      - "${QUESTLOG_PORT:-8080}:80"
+      - "${QUESTLOG_PORT:-47218}:80"
     restart: unless-stopped
 ```
 
@@ -605,13 +606,13 @@ services:
 
 **`run.bat`** must:
 1. `cd /d "%~dp0"`.
-2. Check Docker with `docker info >nul 2>&1`. If that fails, try to start Docker Desktop (`"%ProgramFiles%\Docker\Docker\Docker Desktop.exe"`) and wait up to about 90 s, polling `docker info` every 3 s. If Docker is still unavailable, print a clear message and `pause`.
+2. Check Docker with `docker info >nul 2>&1`. If that fails, print a clear message (start Docker Desktop and run again) and `pause`. Don't try to start Docker.
 3. Run `docker compose up -d --build`. If it fails, print the error and `pause`.
 4. Wait for the page, polling up to about 30 s with PowerShell:
-   `powershell -NoProfile -Command "for($i=0;$i -lt 30;$i++){try{Invoke-WebRequest -UseBasicParsing http://localhost:8080 -TimeoutSec 2 | Out-Null; exit 0}catch{Start-Sleep 1}}; exit 1"`
-5. Open the browser with `start "" http://localhost:8080`.
+   `powershell -NoProfile -Command "for($i=0;$i -lt 30;$i++){try{Invoke-WebRequest -UseBasicParsing http://localhost:%QUESTLOG_PORT% -TimeoutSec 2 | Out-Null; exit 0}catch{Start-Sleep 1}}; exit 1"`
+5. Open the browser with `start "" http://localhost:%QUESTLOG_PORT%`.
 
-The port honours `QUESTLOG_PORT` if set.
+The port is `QUESTLOG_PORT` in the root `.env` file (committed, default 47218). Docker Compose reads that file itself, and `run.bat` parses it to open the right URL. Players change it there if the port is taken.
 
 **`stop.bat`:** `docker compose down`.
 
@@ -646,33 +647,37 @@ Put this in the README: GitHub disables scheduled workflows in a public repo aft
 
 ### 9.1 Reference files
 
-- **`docs/design/tome-background.webp`:** the final background, **2000×1333 px**. It shows a dark oak tavern table, an open red-leather book with brass corners, blank parchment pages, a red bookmark, and props (coins, pouch, wax-sealed letter, chest, inkwell and quill). The user generated it with ChatGPT.
-- **`docs/design/tome-mockup.html`:** a static HTML mockup to open in a browser. It shows the intended page content: list rows, ledger, drop cap, wax seal, buttons, ribbons. Its table and book are drawn in CSS and **are replaced by the background image** in the real app.
+- **`docs/design/tome-table.webp`:** the dark oak tavern table, **2000×1333 px**, no book. Props sit around the edges: bell and coins top-left, pouch, wax-sealed letter, chest and coins down the left edge, quill and inkwell bottom-right. The user generated it with ChatGPT.
+- **`docs/design/tome-book.webp`:** the open red-leather book with brass corners, blank parchment pages and a red bookmark, as a **transparent cut-out**, 2000×1333 px (the book spans about x 63→1938, y 43→1296 including the bookmark). It has no shadow; the app adds one with CSS.
+- **`docs/design/tome-mockup.html`:** a static HTML mockup to open in a browser. It shows the intended page content: list rows, ledger, drop cap, wax seal, buttons, ribbons. Its table and book are drawn in CSS and **are replaced by the two images** in the real app.
   - Its fonts are stand-ins: Cinzel and Cinzel Decorative become **Nodesto**, and EB Garamond becomes **Bookinsanity**.
   - Its ribbons hang vertically. The real ribbons follow section 9.5.
   - Its quest names are only sample content.
 
-### 9.2 The stage (how the image and the UI line up)
+### 9.2 The table and the stage
 
-- **Design space:** everything is laid out in a fixed **2000×1333** coordinate space (the "stage"). The stage is an absolutely-positioned element 2000×1333 px with the background image at 100%, scaled to fit the window with `transform: scale(s)` and centred.
-  - `s = min(innerWidth / 2000, innerHeight / 1333)`, recomputed on `resize`.
+Two layers, so the screen is always full and the book is never cropped:
+
+- **Table (full-bleed):** `body` uses `tome-table.webp` with `background-size: cover`, centred. It crops freely to fill any window shape. No blur, no bars.
+- **Stage (the book):** everything on the book is laid out in a fixed **2000×1333** design space. The stage is an absolutely-positioned 2000×1333 element, centred in the window and scaled with `transform: scale(s)`, containing `tome-book.webp` at 100%.
+  - `s = min(innerWidth / 2240, innerHeight / 1380)`, recomputed on `resize`. The extra room (240 px wide, 47 px tall, beyond the 2000×1333 stage) leaves space for the ribbons that stick out to the right of the book.
+  - The book image has `filter: drop-shadow(0 28px 36px rgba(0,0,0,.65))` so it sits on the table.
   - All page content is positioned in design pixels inside the stage, so text stays exactly on the parchment at any window size.
-- **Behind the stage**, so there are no empty bars: `body` uses the same image as `background-size: cover` with `filter: blur(18px) brightness(.45)`. Use a fixed pseudo-element so the blur doesn't affect content.
-- **Narrow fallback:** below 900 px of viewport width, or in portrait, drop the stage. Show a single scrolling column on a CSS parchment (gradient from the mockup) over the blurred table: the list first, then the quest. This is a low-priority step; build it last.
+  - Layers inside the stage: ribbons (z 0, tucked under the cover), book image (z 1), page content (z 2).
+- **Narrow fallback:** below 900 px of viewport width, or in portrait, drop the stage. Show a single scrolling column on a CSS parchment (gradient from the mockup) over the table: the list first, then the quest. This is a low-priority step; build it last.
 
-**Measured regions** (design pixels, from the image; nudge by a few px if anything looks off):
+**Measured regions** (design pixels, on `tome-book.webp`; nudge by a few px if anything looks off):
 
 | Region | x | y | Notes |
 |---|---|---|---|
-| Book cover (outer, incl. brass corners) | 145 → 1812 | 112 → 1142 | |
-| Left page paper | ≈ 205 → 970 | ≈ 150 → 1095 | page-stack edge at 175–205 |
-| Gutter / spine | ≈ 975 → 995 | | |
-| Right page paper | ≈ 995 → 1750 | ≈ 150 → 1095 | page-stack edge at 1750–1790 |
-| **Left content box (use this)** | **245 → 935** (w 690) | **185 → 1060** (h 875) | clear of edges and foxing |
-| **Right content box (use this)** | **1035 → 1710** (w 675) | **185 → 1060** (h 875) | |
-| Ribbon anchor | starts at x = 1806 | 260 → 760 | clear table strip to x = 2000 |
-| Bookmark (in the image) | 1018 → 1050 | 1095 → 1240 | decoration only |
-| Props to keep clear | top-left 0–330 × 0–300; left edge 0–145; bottom-left 0–420 × 1100–1333; bottom-right inkwell 1740–2000 × 950–1333 | | |
+| Book (outer, incl. brass corners) | 63 → 1938 | 43 → 1150 | bookmark hangs down to y 1296 |
+| Left page paper | ≈ 172 → 1000 | ≈ 88 → 1089 | darkens toward the spine from x ≈ 946 |
+| Spine | ≈ 1002 | | |
+| Right page paper | ≈ 1004 → 1835 | ≈ 96 → 1089 | page-stack edge at about 1835 → 1880 |
+| **Left content box (use this)** | **235 → 930** (w 695) | **180 → 1050** (h 870) | clear of edges and spine shading |
+| **Right content box (use this)** | **1075 → 1765** (w 690) | **180 → 1050** (h 870) | |
+| Ribbon anchor | left end at x = 1890 (under the cover), book edge at ≈ 1925 | 260 → 760 | the table shows beyond the book |
+| Bookmark (in the image) | 1033 → 1087 | 1090 → 1296 | decoration only |
 
 **Design-space type sizes** (scaled down with the stage, so about 0.7× on a 1440 px wide window):
 
@@ -743,11 +748,11 @@ Put the licence credit in `CREDITS.md` (section 11).
 
 ### 9.5 Ribbons (filter tabs)
 
-- **Position:** horizontal silk ribbons emerging from the right edge of the book. Left end at x = 1806, stacked from y ≈ 260 with 12 px gaps. Each is about **58 px tall**.
+- **Position:** horizontal silk ribbons emerging from the right edge of the book. Left end at x = 1890 (hidden under the cover, which is at x ≈ 1925), stacked from y ≈ 260 with 12 px gaps. Each is about **58 px tall**.
 - **Shape:** swallowtail notch on the right end (`clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 50%, 100% 100%, 0 100%)`). Fill is a subtle vertical gradient of the ribbon colour, with a 1px lighter line along the top.
 - **Shadow:** the left end gets an inner shadow (`inset 10px 0 10px -6px rgba(0,0,0,.6)`) so the ribbon looks tucked under the cover.
 - **Label:** Nodesto 24px, `--on-crimson`, letter-spacing .06em.
-- **Length:** **118 px** at rest, **172 px** when selected, so the selected ribbon pokes further out. Animate the width over 200 ms ease-out (respect `prefers-reduced-motion`). Hover adds 8 px.
+- **Length:** visible part beyond the cover is **118 px** at rest and **172 px** when selected, so the selected ribbon pokes further out. Animate the width over 200 ms ease-out (respect `prefers-reduced-motion`). Hover adds 8 px.
 - **Colours:**
 
   | Ribbon | Colour |
@@ -784,7 +789,7 @@ Put the licence credit in `CREDITS.md` (section 11).
   - Title "Abandon your changes?" (Nodesto 40px). Body: "Your unsaved words will be lost to the ether."
   - Buttons: **Keep writing** (secondary, focused by default) and **Abandon them** (primary).
   - Esc means Keep writing. Use `<dialog>` with `showModal()` for focus trapping.
-- **Toasts:** small parchment slips bottom-left (over the table, inside the stage at around x 30–420, y 1130–1320 so they cover only the chest and coins), each rotated ±1°. Text is Zatanna 22px in `--ink`, and a slip fades out after 5 s.
+- **Toasts:** small parchment slips bottom-left (over the table, anchored to the bottom-left corner of the window, outside the stage, so they sit on the table and not on the book), each rotated ±1°. Text is Zatanna 22px in `--ink`, and a slip fades out after 5 s.
 
 ### 9.8 Wording (use these exact strings)
 
@@ -822,10 +827,11 @@ Put the licence credit in `CREDITS.md` (section 11).
 
 ## 10. Build order and done criteria
 
-Commit after each step.
+Commit after each step. Status: step 1 is **done**; steps 2 to 8 are not started.
 
-1. **Scaffold.** Vite React TS app in `app/`, router, the stage component with the background image and scaling, fonts loaded, theme tokens. Dockerfile, nginx.conf, docker-compose.yml, `run.bat`, `stop.bat`.
-   *Done when* `run.bat` opens the book background, correctly scaled at 1280×720, 1920×1080 and 2560×1440.
+1. **Scaffold. (Done.)** Vite React TS app in `app/`, router, the table and book layers with scaling, fonts loaded, theme tokens. Dockerfile, nginx.conf, docker-compose.yml, `run.bat`, `stop.bat`.
+   *Done when* `run.bat` opens the table filling the window with the book centred on it, correctly scaled at 1280×720, 1920×1080 and 2560×1440 (and an ultrawide such as 2560×1080).
+   *As built:* the Docker image builds and serves the app (checked with `docker compose up`); the layout was checked at 1280×720, 1920×1080, 2560×1440, 2560×1080 and 1280×1024. `run.bat` itself has not yet been run end to end. See `AGENTS.md` for deviations from this plan (default port 47218 set in the root `.env`, latest major versions of all packages, `app/.env` still holds placeholders).
 2. **Database.** `supabase/schema.sql`, the README setup checklist, `.env.example`, the keep-alive workflow.
    *Done when* the SQL runs cleanly on a fresh project, and an anon REST call to `quests` returns nothing while `rpc/ping` returns `"pong"`.
 3. **Login.** The login page on the book, the auth guard, the name handling and "Close the book".
@@ -860,7 +866,7 @@ Commit after each step.
 | Item | Source | Licence / notes |
 |---|---|---|
 | Fonts: Nodesto Caps Condensed, Bookinsanity, Mr Eaves Small Caps, Solbera Imitation, Zatanna Misdirection | Solbera's fonts, mirrored at <https://github.com/jonathonf/solbera-dnd-fonts> | **CC BY-SA 4.0.** Credit "Fonts by Solbera, CC BY-SA 4.0" in `CREDITS.md` with a link to the licence (<https://creativecommons.org/licenses/by-sa/4.0/>). If we ever modify the font files, the modified fonts must be shared under the same licence. Using them unmodified in the app is fine |
-| Background art `tome-background.webp` | Generated by the repo owner with ChatGPT from a layout reference, then upscaled | Owned by the repo owner. Credit as "Background art generated with ChatGPT" |
+| Table and book art `tome-table.webp`, `tome-book.webp` | Generated by the repo owner with ChatGPT from a layout reference, then upscaled | Owned by the repo owner. Credit as "Table and book art generated with ChatGPT" |
 | Supabase | <https://supabase.com>, free tier | Free projects pause after about 7 days without activity, hence the keep-alive. Docs: Auth <https://supabase.com/docs/guides/auth>, RLS <https://supabase.com/docs/guides/database/postgres/row-level-security>, Realtime Postgres Changes <https://supabase.com/docs/guides/realtime/postgres-changes>, API keys <https://supabase.com/docs/guides/api/api-keys> |
 | Tiptap | <https://tiptap.dev/docs/editor/getting-started/install/react> | MIT |
 | DOMPurify | <https://github.com/cure53/DOMPurify> | Apache-2.0 / MPL-2.0 |

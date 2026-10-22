@@ -1,0 +1,52 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #root { height: 100%; margin: 0; }
+
+/* The table fills the window and crops freely. */
+body {
+  overflow: hidden;
+  background: #1a0f08 url('/images/tome-table.webp') center / cover no-repeat;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 24px;
+  line-height: 1.55;
+}
+
+/* 2000x1333 design space for the book, scaled to fit and centred by <Stage>. */
+.stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: center center;
+}
+
+/* Layers inside the stage: ribbons (0, tucked under the cover), book (1), page content (2). */
+.stage-book {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  filter: drop-shadow(0 28px 36px rgba(0, 0, 0, .65));
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Content boxes (design pixels), measured on tome-book.webp. */
+.page { position: absolute; top: 180px; height: 870px; z-index: 2; }
+.page-left { left: 235px; width: 695px; }
+.page-right { left: 1075px; width: 690px; }
+
+.book-title {
+  margin: 0;
+  font: 400 64px/1.1 var(--font-title);
+  color: var(--ink-title);
+}
+.book-subtitle { margin: 0 0 12px; font-style: italic; font-size: 20px; color: var(--ink-muted); }
+.page-heading { margin: 0; font: 400 52px/1.1 var(--font-title); color: var(--ink-title); }
+
+:focus-visible { outline: 2px solid var(--crimson); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
