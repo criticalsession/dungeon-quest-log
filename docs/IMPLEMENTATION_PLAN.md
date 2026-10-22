@@ -688,7 +688,7 @@ Two layers, so the screen is always full and the book is never cropped:
 | Small-caps labels | 17px |
 | Row titles | 26px |
 | Quest title | 52px |
-| "Quest Log" header | 64px |
+| "Dungeon Quest Log" header | 64px |
 | Buttons | 17px |
 
 ### 9.3 Fonts (Solbera's D&D 5e fonts, CC BY-SA 4.0)
@@ -767,7 +767,7 @@ Put the licence credit in `CREDITS.md` (section 11).
 
 ### 9.6 Page furniture
 
-- **Left page header:** the italic line "Being the true chronicle of the company", then **"Quest Log"** in Nodesto 64px `--ink-title`, then the **flourish divider**: a horizontal line with curls and a crimson diamond centre (copy the SVG from the mockup, recoloured with tokens). Below that, a row with the group or filter title on the left and **Inscribe a quest** on the right.
+- **Left page header:** the italic line "Being the true chronicles of The Boys in Amael", then **"Dungeon Quest Log"** in Nodesto 64px `--ink-title`, then the **flourish divider**: a horizontal line with curls and a crimson diamond centre (copy the SVG from the mockup, recoloured with tokens). Below that, a row with the group or filter title on the left and **Inscribe a quest** on the right.
 - **Wax seal:** an SVG blob with a ring and a star, from the mockup. Fill follows the status colour, and the label sits at the bottom in Mr Eaves. 88 px, rotated -8°.
 - **Drop cap:** `.description > p:first-of-type::first-letter`:
   - `float: left`, `font-family: 'Solbera Imitation'`, `font-size: 4.1em`, `line-height: .9`
@@ -812,7 +812,7 @@ Put the licence credit in `CREDITS.md` (section 11).
 | Footer | Last amended by {name}, {relative time} |
 | Login heading (right page) | Who goes there? |
 | Login button | Open the book |
-| Login left page | "Quest Log" + "Being the true chronicle of the company" |
+| Login left page | "Dungeon Quest Log" + "Being the true chronicles of The Boys in Amael" |
 | Field labels | Received · Session · Given by · Received at · Quest location |
 | Title placeholder | Name this quest |
 | Description placeholder | Write what the party learned… |
@@ -827,7 +827,7 @@ Put the licence credit in `CREDITS.md` (section 11).
 
 ## 10. Build order and done criteria
 
-Commit after each step. Status: steps 1 to 4 are done; steps 5 to 8 are not started.
+Commit after each step. Status: steps 1 to 5 are done; steps 6 to 8 are not started.
 
 1. **Scaffold. (Done.)** Vite React TS app in `app/`, router, the table and book layers with scaling, fonts loaded, theme tokens. Dockerfile, nginx.conf, docker-compose.yml, `run.bat`, `stop.bat`.
    *Done when* `run.bat` opens the table filling the window with the book centred on it, correctly scaled at 1280×720, 1920×1080 and 2560×1440 (and an ultrawide such as 2560×1080).
@@ -840,7 +840,8 @@ Commit after each step. Status: steps 1 to 4 are done; steps 5 to 8 are not star
    *As built:* `lib/supabase.ts`, `lib/playerName.ts`, `lib/auth.ts` (route loaders `requireLogin` / `skipLoginIfSignedIn`, `closeTheBook`), `BookHeader`, `Flourish`, real `LoginPage`, and a `LogPage` placeholder with a "Close the book" button (bottom-left of the left page, temporary). Build passes. In the browser: a logged-out visit to `#/` redirects to `#/login`, and a wrong password shows "That password is not known here." **Owner verified by hand:** right password lands on the log, reload stays logged in, "Close the book" works. **Not verified:** the rate-limit message. The lock release in "Close the book" waits for phase 6. `.btn` styles live in `book.css`.
 4. **Read path. (Done.)** Store, initial load, quest list with ribbons and grouping, quest view (ledger, drop cap, seal, footer), empty and sealed states.
    *As built:* `lib/ordinal.ts` (with the unit tests from 8.5), `dates.ts`, `sanitize.ts`, `useNow.ts`; `store/quests.ts`; `Ribbons`, `QuestList`, `QuestRow`, `QuestView`, `WaxSeal`, `SealedArchiveNotice`, `icons`; `LogPage` is now the layout and `pages/QuestPage.tsx` holds the right-page routes; styles in `styles/log.css`. `npm run build` and `npm test` (15 tests) pass. Checked in the browser at 1920×1080 with the Supabase REST calls mocked (a fake session and eight sample quests, nothing written to the database): grouping, oldest-first order, ribbon filtering with `?tab=`, ribbon arrow keys, selection kept across ribbons, quest view (ledger, drop cap, seal, relative footer, script tag stripped), unknown id, unknown path redirect, empty right page, and the sealed state (a rejected fetch). **Not verified:** real data from the owner's project, the empty-log and filtered-empty messages, other window sizes, a real paused-project response. Left for later phases: the "Inscribe a quest" button is disabled until phase 5; the view's action buttons (phase 5); lock display (phase 6); the "archived by someone else" notice (phase 7).
-5. **Write path.** Create, amend (Tiptap), status buttons, archive and unarchive, all via RPC.
+5. **Write path. (Done.)** Create, amend (Tiptap), status buttons, archive and unarchive, all via RPC.
+   *As built:* `lib/clientId.ts`, `lib/questApi.ts` (RPC wrappers, error mapping to `QuestError`; each returned quest row goes into the store via the new `upsertQuest`), `QuestEditor`, `EditorToolbar`, routes `#/new` and `#/quest/:id/edit` in `pages/QuestPage.tsx`, action buttons in `QuestView`, "Inscribe a quest" enabled. Amending takes the lock on open (`acquire_lock`, needed because `save_quest` requires it) and gives it up when the page closes; Abandon simply leaves, with **no confirm dialog yet** (phase 6). `npm run build` and `npm test` pass. Checked in the browser at one window size with the Supabase calls mocked in the page (nothing written to the real database): create (arguments sent, bold text kept as `<strong>`), amend opens with the lock taken and the draft filled, status buttons for every state, archive and "Return to the log", the lock-lost banner (Save disabled, "Copy my text" shown), the network-failure message, and the `QUEST_LOCKED` message on a status button. **Not verified:** any of this against the real project; two browsers; saving an edited title end to end (the save call path was exercised, the changed value was not read back); the empty-title message; the Copy my text clipboard result. Left for phase 6: heartbeat, `beforeunload`/`pagehide` release, `useBlocker` and the confirm dialog, lock display and disabled buttons for someone else's lock, release in "Close the book". Left for phase 7: the "already penning changes" toast (a notice with a link back is shown instead).
 6. **Locks.** Acquire, heartbeat, release, unload release, lock display in list and view, lock-lost handling, confirm dialog via `useBlocker`, `beforeunload`.
 7. **Live sync.** Realtime subscription, refetch on (re)subscribe and visibility, toasts, the "wavering connection" banner.
 8. **Polish.** Narrow fallback layout, keyboard navigation, reduced motion, `CREDITS.md`, README for players.

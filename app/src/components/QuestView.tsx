@@ -1,9 +1,12 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router'
 import { formatLongDate, formatRelative } from '../lib/dates'
 import { questKicker } from '../lib/ordinal'
+import { getActiveName } from '../lib/playerName'
+import { QuestError, setArchived, setStatus } from '../lib/questApi'
 import { sanitizeHtml } from '../lib/sanitize'
 import { useNow } from '../lib/useNow'
-import type { Quest } from '../store/quests'
+import type { Quest, QuestStatus } from '../store/quests'
 import { WaxSeal } from './WaxSeal'
 
 function LedgerRow({ label, value, wide }: { label: string; value: string; wide?: boolean }) {
@@ -13,6 +16,57 @@ function LedgerRow({ label, value, wide }: { label: string; value: string; wide?
       <span className="ledger-leader" aria-hidden="true" />
       <dd>{value}</dd>
     </div>
+  )
+}
+
+type Action = { label: string; run: (id: string, name: string) => Promise<unknown> }
+
+const toStatus = (label: string, status: QuestStatus): Action => ({ label, run: (id, name) => setStatus(id, name, status) })
+const toArchived = (label: string, archived: boolean): Action => ({ label, run: (id, name) => setArchived(id, name, archived) })
+
+/** The buttons that apply to this quest's state (plan 7.4). */
+function actionsFor(q: Quest): Action[] {
+  if (q.archived) return [toArchived('Return to the log', false)]
+  if (q.status === 'active') return [toStatus('Mark fulfilled', 'fulfilled'), toStatus('Set aside', 'on_hold'), toArchived('Archive', true)]
+  if (q.status === 'on_hold') return [toStatus('Take up again', 'active'), toStatus('Mark fulfilled', 'fulfilled'), toArchived('Archive', true)]
+  return [toStatus('Reopen the quest', 'active'), toArchived('Archive', true)]
+}
+
+function QuestActions({ quest }: { quest: Quest }) {
+  const navigate = useNavigate()
+  const { search } = useLocation()
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+
+  async function perform(action: Action) {
+    setBusy(true)
+    setError('')
+    try {
+      await action.run(quest.id, getActiveName())
+    } catch (e) {
+      setError(
+        e instanceof QuestError && e.code === 'QUEST_LOCKED'
+          ? 'Someone is penning changes to this quest. Try again in a moment.'
+          : 'Your words could not reach the archive. Try again.',
+      )
+    }
+    setBusy(false)
+  }
+
+  return (
+    <>
+      {error && <p className="form-error" role="alert">{error}</p>}
+      <div className="quest-actions">
+        <button type="button" className="btn btn-primary" disabled={busy} onClick={() => navigate(`/quest/${quest.id}/edit${search}`)}>
+          Amend
+        </button>
+        {actionsFor(quest).map((a) => (
+          <button key={a.label} type="button" className="btn btn-secondary" disabled={busy} onClick={() => void perform(a)}>
+            {a.label}
+          </button>
+        ))}
+      </div>
+    </>
   )
 }
 
@@ -39,7 +93,7 @@ export function QuestView({ quest }: { quest: Quest }) {
       </header>
       {rows.length > 0 && <dl className="ledger">{rows}</dl>}
       {html && <div className="description" dangerouslySetInnerHTML={{ __html: html }} />}
-      {/* Action buttons (Amend, status, archive) arrive with the write path (phase 5). */}
+      <QuestActions quest={quest} />
       <p className="quest-foot">
         Last amended by {quest.updated_by_name}, {formatRelative(quest.updated_at, now)}
       </p>
