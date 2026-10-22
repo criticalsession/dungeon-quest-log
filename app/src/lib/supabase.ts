@@ -10,3 +10,10 @@ export const supabase = createClient(
     realtime: { params: { eventsPerSecond: 10 } },
   },
 )
+
+// The latest access token, kept where `pagehide` can read it without awaiting anything (plan 7.6).
+let accessToken: string | null = null
+supabase.auth.onAuthStateChange((_event, session) => {
+  accessToken = session?.access_token ?? null
+})
+export const getAccessToken = () => accessToken

@@ -1,10 +1,12 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Outlet, useMatch, useNavigate, useSearchParams } from 'react-router'
 import { BookHeader } from '../components/BookHeader'
+import { ConfirmDialog } from '../components/ConfirmDialog'
 import { QuestList } from '../components/QuestList'
 import { Ribbons, TABS } from '../components/Ribbons'
 import { SealedArchiveNotice } from '../components/SealedArchiveNotice'
 import { closeTheBook } from '../lib/auth'
+import { clearUnsaved, hasUnsaved } from '../lib/useUnsavedGuard'
 import { groupsForTab, useQuests, type Tab } from '../store/quests'
 
 const parseTab = (value: string | null): Tab => TABS.find((t) => t.id === value)?.id ?? 'all'
@@ -17,6 +19,7 @@ export function LogPage() {
   const loaded = useQuests((s) => s.loaded)
   const connection = useQuests((s) => s.connection)
   const load = useQuests((s) => s.load)
+  const [confirmClose, setConfirmClose] = useState(false)
   const tab = parseTab(params.get('tab'))
 
   useEffect(() => {
@@ -33,10 +36,16 @@ export function LogPage() {
     else navigate(`/${search}`, { replace: true })
   }
 
-  async function onClose() {
+  async function close() {
+    // The question has been answered; don't let the editor's guard ask it again.
+    clearUnsaved()
+    setConfirmClose(false)
     await closeTheBook()
     navigate('/login', { replace: true })
   }
+
+  // Closing the book with an unsaved draft asks first, like leaving the editor does.
+  const onClose = () => (hasUnsaved() ? setConfirmClose(true) : void close())
 
   return (
     <>
@@ -57,6 +66,7 @@ export function LogPage() {
       ) : (
         loaded && <Outlet />
       )}
+      <ConfirmDialog open={confirmClose} onKeep={() => setConfirmClose(false)} onAbandon={() => void close()} />
     </>
   )
 }

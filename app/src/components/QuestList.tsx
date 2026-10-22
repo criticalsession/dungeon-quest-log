@@ -1,6 +1,8 @@
 import { useCallback, useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router'
-import { groupsForTab, STATUS_LABEL, useQuests, type Tab } from '../store/quests'
+import { getClientId } from '../lib/clientId'
+import { useNow } from '../lib/useNow'
+import { groupsForTab, lockHeldByOther, STATUS_LABEL, useQuests, type Tab } from '../store/quests'
 import { QuillIcon } from './icons'
 import { QuestRow } from './QuestRow'
 import { TABS } from './Ribbons'
@@ -11,6 +13,9 @@ const EMPTY_FILTERED = 'No quests here.'
 /** Left page below the header: the title row, then the scrolling list. */
 export function QuestList({ tab, selectedId }: { tab: Tab; selectedId: string | undefined }) {
   const quests = useQuests((s) => s.quests)
+  const locks = useQuests((s) => s.locks)
+  // Expired locks disappear without a new event (plan 7.6).
+  const now = useNow(15_000)
   const navigate = useNavigate()
   const { search } = useLocation()
 
@@ -44,7 +49,13 @@ export function QuestList({ tab, selectedId }: { tab: Tab; selectedId: string | 
                 </h3>
               )}
               {g.quests.map((q) => (
-                <QuestRow key={q.id} quest={q} selected={q.id === selectedId} onSelect={select} />
+                <QuestRow
+                  key={q.id}
+                  quest={q}
+                  selected={q.id === selectedId}
+                  lockedBy={lockHeldByOther(locks, q.id, getClientId(), now)?.holder_name}
+                  onSelect={select}
+                />
               ))}
             </section>
           ))

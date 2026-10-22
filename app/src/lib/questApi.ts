@@ -1,6 +1,6 @@
 import { useQuests, type Quest, type QuestStatus } from '../store/quests'
 import { getClientId } from './clientId'
-import { supabase } from './supabase'
+import { getAccessToken, supabase } from './supabase'
 
 export type QuestErrorCode = 'QUEST_LOCKED' | 'LOCK_NOT_HELD' | 'NOT_AUTHENTICATED' | 'NETWORK' | 'OTHER'
 
@@ -76,8 +76,41 @@ const queued = <T>(job: () => Promise<T>): Promise<T> => {
   return run
 }
 
+// The quest this tab holds the edit lock on, so "Close the book" can give it up.
+let heldQuestId: string | null = null
+
 export const acquireLock = (questId: string, name: string) =>
-  queued(() => call<void>('acquire_lock', { p_quest_id: questId, p_client_id: getClientId(), p_name: name }))
+  queued(async () => {
+    await call<void>('acquire_lock', { p_quest_id: questId, p_client_id: getClientId(), p_name: name })
+    heldQuestId = questId
+  })
 
 export const releaseLock = (questId: string) =>
-  queued(() => call<void>('release_lock', { p_quest_id: questId, p_client_id: getClientId() }))
+  queued(async () => {
+    if (heldQuestId === questId) heldQuestId = null
+    await call<void>('release_lock', { p_quest_id: questId, p_client_id: getClientId() })
+  })
+
+export const releaseHeldLock = async () => {
+  if (heldQuestId) await releaseLock(heldQuestId).catch(() => undefined)
+}
+
+/** False means the lock is gone: it expired and someone else took it. */
+export const heartbeatLock = (questId: string) =>
+  call<boolean>('heartbeat_lock', { p_quest_id: questId, p_client_id: getClientId() })
+
+/** For `pagehide`, which can't await: a keepalive request outlives the page. */
+export function releaseLockOnUnload(questId: string) {
+  const token = getAccessToken()
+  if (!token) return
+  void fetch(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/rpc/release_lock`, {
+    method: 'POST',
+    keepalive: true,
+    headers: {
+      apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string,
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ p_quest_id: questId, p_client_id: getClientId() }),
+  }).catch(() => undefined)
+}
