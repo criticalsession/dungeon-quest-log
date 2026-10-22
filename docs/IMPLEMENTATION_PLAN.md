@@ -827,7 +827,7 @@ Put the licence credit in `CREDITS.md` (section 11).
 
 ## 10. Build order and done criteria
 
-Commit after each step. Status: step 1 is **done**; steps 2 to 8 are not started.
+Commit after each step. Status: steps 1 to 3 are done; steps 4 to 8 are not started.
 
 1. **Scaffold. (Done.)** Vite React TS app in `app/`, router, the table and book layers with scaling, fonts loaded, theme tokens. Dockerfile, nginx.conf, docker-compose.yml, `run.bat`, `stop.bat`.
    *Done when* `run.bat` opens the table filling the window with the book centred on it, correctly scaled at 1280×720, 1920×1080 and 2560×1440 (and an ultrawide such as 2560×1080).
@@ -835,8 +835,9 @@ Commit after each step. Status: step 1 is **done**; steps 2 to 8 are not started
 2. **Database. (Done.)** `supabase/schema.sql`, the README setup checklist, `.env.example`, the keep-alive workflow.
    *Done when* the SQL runs cleanly on a fresh project, and an anon REST call to `quests` returns nothing while `rpc/ping` returns `"pong"`.
    *As built:* `schema.sql` is the section 6 draft unchanged (plus a header comment; it is not idempotent). `.env.example` already existed from step 1. Tested on a local `postgres` container with stubbed `anon`/`authenticated` roles, `auth.role()` and the `supabase_realtime` publication: the SQL runs cleanly; anon sees 0 quests, can call `ping` but not the write functions or insert directly; authenticated can't write tables directly; lock acquire/refuse/expiry takeover, heartbeat, release, `save_quest` (needs lock, releases it), `set_status`/`set_archived` (refused only while another client holds a live lock) and the title check all behave as designed. **Real project:** the owner ran the SQL and filled `app/.env`; against it an anon `GET /rest/v1/quests` returned `[]`, `rpc/ping` returned `"pong"`, anon `create_quest` and a direct insert were refused (42501), and sign-up returned `signup_disabled`. **Not verified:** the keep-alive workflow run on GitHub (owner: push, then Actions → Run workflow), and Realtime events (phase 7).
-3. **Login.** The login page on the book, the auth guard, the name handling and "Close the book".
+3. **Login. (Done.)** The login page on the book, the auth guard, the name handling and "Close the book".
    *Done when* a wrong password shows the error, the right one lands on the log, and a reload stays logged in with the name kept.
+   *As built:* `lib/supabase.ts`, `lib/playerName.ts`, `lib/auth.ts` (route loaders `requireLogin` / `skipLoginIfSignedIn`, `closeTheBook`), `BookHeader`, `Flourish`, real `LoginPage`, and a `LogPage` placeholder with a "Close the book" button (bottom-left of the left page, temporary). Build passes. In the browser: a logged-out visit to `#/` redirects to `#/login`, and a wrong password shows "That password is not known here." **Owner verified by hand:** right password lands on the log, reload stays logged in, "Close the book" works. **Not verified:** the rate-limit message. The lock release in "Close the book" waits for phase 6. `.btn` styles live in `book.css`.
 4. **Read path.** Store, initial load, quest list with ribbons and grouping, quest view (ledger, drop cap, seal, footer), empty and sealed states.
 5. **Write path.** Create, amend (Tiptap), status buttons, archive and unarchive, all via RPC.
 6. **Locks.** Acquire, heartbeat, release, unload release, lock display in list and view, lock-lost handling, confirm dialog via `useBlocker`, `beforeunload`.

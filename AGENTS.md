@@ -4,8 +4,10 @@ Guidance for anyone (human or agent) changing this repo. **`docs/IMPLEMENTATION_
 
 ## Status
 
-- Steps 1 (scaffold) and 2 (database) are done; the real Supabase project is set up and `app/.env` holds real values. Steps 3 to 8 are not started.
-- Placeholder `LoginPage` and `LogPage` only render the title. Real pages come in steps 3 to 5.
+- Steps 1 (scaffold), 2 (database) and 3 (login) are done; the real Supabase project is set up and `app/.env` holds real values. Step 3 was checked by the owner by hand (login, reload, "Close the book"); only the rate-limit message is untested. Steps 4 to 8 are not started.
+- `LoginPage` is real. `LogPage` is a placeholder (title plus a temporary "Close the book" button); the real log comes in steps 4 and 5.
+- Auth guard is route loaders in `lib/auth.ts` (`requireLogin` on the log routes, `skipLoginIfSignedIn` on login). The active name lives in `sessionStorage['dql.name']`, the pre-fill name in `localStorage['dql.lastName']` (`lib/playerName.ts`). A new tab has a session but no name, so it asks for the name again, as designed.
+- Shared button classes (`.btn`, `.btn-primary`, `.btn-secondary`) and form styles are in `styles/book.css`.
 
 ## Commands
 
