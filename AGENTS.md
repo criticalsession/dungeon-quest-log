@@ -4,7 +4,7 @@ Guidance for anyone (human or agent) changing this repo. **`docs/IMPLEMENTATION_
 
 ## Status
 
-- Step 1 (scaffold) is done. Steps 2 to 8 are not started.
+- Steps 1 (scaffold) and 2 (database) are done; the real Supabase project is set up and `app/.env` holds real values. Steps 3 to 8 are not started.
 - Placeholder `LoginPage` and `LogPage` only render the title. Real pages come in steps 3 to 5.
 
 ## Commands
@@ -31,7 +31,7 @@ All app commands run from `app/`.
 
 - **Port:** `QUESTLOG_PORT` lives in the root `.env` (committed), default **47218**, not 8080. Docker Compose reads that file automatically and `run.bat` parses it to open the browser. Players change it there if the port is taken. Plan 8.6 and 8.7 were updated to match.
 - **`run.bat` never starts Docker Desktop.** If `docker info` fails it prints a message and pauses.
-- There are two `.env` files with different jobs: root `.env` (port only) and `app/.env` (Supabase URL, publishable key, party email, all `VITE_*`). `app/.env` currently holds **placeholders**; the owner fills in real values (plan section 5, step 5). Both are committed on purpose; never put secrets in either.
+- There are two `.env` files with different jobs: root `.env` (port only) and `app/.env` (Supabase URL, publishable key, party email, all `VITE_*`). `app/.env` holds the real project values (the publishable key is public by design). Both are committed on purpose; never put secrets in either.
 - Dependencies are the latest at install time: React 19, react-router 8, Vite 8, TypeScript 7, zustand 5, Tiptap 3. Check release notes if an API in the plan looks outdated (`createHashRouter` and `useBlocker` are imported from `react-router`, not `react-router-dom`).
 - `app/tsconfig.tsbuildinfo` is ignored (`*.tsbuildinfo` in `.gitignore`).
 
