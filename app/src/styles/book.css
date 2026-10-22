@@ -15,9 +15,9 @@ body {
 /* 2000x1333 design space for the book, scaled to fit and centred by <Stage>. */
 .stage {
   position: absolute;
-  top: 50%;
+  top: 0;
   left: 50%;
-  transform-origin: center center;
+  transform-origin: 50% 0;
 }
 
 /* Layers inside the stage: ribbons (0, tucked under the cover), book (1), page content (2). */
@@ -33,7 +33,16 @@ body {
 }
 
 /* Content boxes (design pixels), measured on tome-book.webp. */
-.page { position: absolute; top: 180px; height: 870px; z-index: 2; }
+/* --page-h is set by <Stage>: 870 when the whole book fits, shorter when the bottom is cropped. */
+.page {
+  position: absolute;
+  top: 180px;
+  height: var(--page-h, 870px);
+  z-index: 2;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-leader) transparent;
+}
 .page-left { left: 235px; width: 695px; }
 .page-right { left: 1075px; width: 690px; }
 
