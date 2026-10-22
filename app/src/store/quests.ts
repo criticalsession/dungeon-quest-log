@@ -41,6 +41,9 @@ type State = {
   load: () => Promise<void>
   /** Insert or replace one quest (a row an RPC returned). */
   upsertQuest: (quest: Quest) => void
+  /** Insert, replace or drop one lock row (a realtime event). */
+  applyLock: (lock: Pick<Lock, 'quest_id'> & Partial<Lock>, removed: boolean) => void
+  setConnection: (connection: Connection) => void
   /** Forget everything (on "Close the book"). */
   reset: () => void
 }
@@ -61,15 +64,23 @@ export const useQuests = create<State>((set, get) => ({
           supabase.from('quest_locks').select('*'),
         ])
         if (quests.error || locks.error) throw quests.error ?? locks.error
-        set({
-          quests: Object.fromEntries((quests.data as Quest[]).map((q) => [q.id, q])),
-          locks: Object.fromEntries((locks.data as Lock[]).map((l) => [l.quest_id, l])),
-          loaded: true,
-          connection: 'live',
+        set((s) => {
+          const fresh = Object.fromEntries((quests.data as Quest[]).map((q) => [q.id, q]))
+          // A realtime event or an RPC reply may have landed while this fetch was in flight; keep the newer row.
+          for (const [id, known] of Object.entries(s.quests)) {
+            if (fresh[id] && known.version > fresh[id].version) fresh[id] = known
+          }
+          return {
+            quests: fresh,
+            locks: Object.fromEntries((locks.data as Lock[]).map((l) => [l.quest_id, l])),
+            loaded: true,
+            // After the first load the realtime channel owns the connection state.
+            connection: s.loaded ? s.connection : 'live',
+          }
         })
       } catch {
         // Unreachable, 5xx or a paused project all look the same to the player (plan 7.8).
-        // Once loaded, a failed refetch keeps the data on screen; phase 7 handles reconnecting.
+        // Once loaded, a failed refetch keeps the data on screen; the channel status drives the banner.
         if (!get().loaded) set({ connection: 'sealed' })
       }
     })().finally(() => {
@@ -85,6 +96,16 @@ export const useQuests = create<State>((set, get) => ({
       if (known && known.version > quest.version) return s
       return { quests: { ...s.quests, [quest.id]: quest } }
     }),
+
+  applyLock: (lock, removed) =>
+    set((s) => {
+      const locks = { ...s.locks }
+      if (removed) delete locks[lock.quest_id]
+      else locks[lock.quest_id] = lock as Lock
+      return { locks }
+    }),
+
+  setConnection: (connection) => set((s) => (s.connection === 'sealed' ? s : { connection })),
 
   reset: () => set(empty),
 }))

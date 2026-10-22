@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Outlet } from 'react-router'
+import { Toasts } from './Toasts'
 
 export const STAGE_W = 2000
 export const STAGE_H = 1333
@@ -34,6 +35,7 @@ export function Stage() {
   }, [])
 
   return (
+    <>
     <main
       className="stage"
       style={{
@@ -46,5 +48,7 @@ export function Stage() {
       <img className="stage-book" src="/images/tome-book.webp" alt="" aria-hidden="true" />
       <Outlet />
     </main>
+    <Toasts />
+    </>
   )
 }
