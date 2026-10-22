@@ -827,10 +827,11 @@ Put the licence credit in `CREDITS.md` (section 11).
 
 ## 10. Build order and done criteria
 
-Commit after each step.
+Commit after each step. Status: step 1 is **done**; steps 2 to 8 are not started.
 
-1. **Scaffold.** Vite React TS app in `app/`, router, the stage component with the background image and scaling, fonts loaded, theme tokens. Dockerfile, nginx.conf, docker-compose.yml, `run.bat`, `stop.bat`.
+1. **Scaffold. (Done.)** Vite React TS app in `app/`, router, the table and book layers with scaling, fonts loaded, theme tokens. Dockerfile, nginx.conf, docker-compose.yml, `run.bat`, `stop.bat`.
    *Done when* `run.bat` opens the table filling the window with the book centred on it, correctly scaled at 1280×720, 1920×1080 and 2560×1440 (and an ultrawide such as 2560×1080).
+   *As built:* the Docker image builds and serves the app (checked with `docker compose up`); the layout was checked at 1280×720, 1920×1080, 2560×1440, 2560×1080 and 1280×1024. `run.bat` itself has not yet been run end to end. See `AGENTS.md` for deviations from this plan (default port 47218 set in the root `.env`, latest major versions of all packages, `app/.env` still holds placeholders).
 2. **Database.** `supabase/schema.sql`, the README setup checklist, `.env.example`, the keep-alive workflow.
    *Done when* the SQL runs cleanly on a fresh project, and an anon REST call to `quests` returns nothing while `rpc/ping` returns `"pong"`.
 3. **Login.** The login page on the book, the auth guard, the name handling and "Close the book".
