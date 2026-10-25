@@ -11,10 +11,12 @@ export const STAGE_H = 1333
 // The bottom is cropped, and the pages shrink to the visible height and scroll
 // inside (see .page in book.css).
 const FIT_W = 2240
-const MIN_VISIBLE_H = 760 // design px that must stay visible, so very wide windows don't over-zoom
 const PAGE_TOP = 180
 const PAGE_MAX_H = 870
 const PAGE_BOTTOM_GAP = 70
+// Design px that must stay visible: enough for full-height pages, so ultrawide windows
+// (wider than about 2:1) shrink the book instead of squashing the pages.
+const MIN_VISIBLE_H = PAGE_TOP + PAGE_MAX_H + PAGE_BOTTOM_GAP // 1120
 
 // Below 900 px wide, or in portrait, the book is dropped for one scrolling column (plan 9.2).
 const NARROW_QUERY = '(max-width: 899px), (orientation: portrait)'
