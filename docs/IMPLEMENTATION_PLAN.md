@@ -660,7 +660,7 @@ Two layers, so the screen is always full and the book is never cropped:
 
 - **Table (full-bleed):** `body` uses `tome-table.webp` with `background-size: cover`, centred. It crops freely to fill any window shape. No blur, no bars.
 - **Stage (the book):** everything on the book is laid out in a fixed **2000×1333** design space. The stage is an absolutely-positioned 2000×1333 element, centred in the window and scaled with `transform: scale(s)`, containing `tome-book.webp` at 100%.
-  - `s = min(innerWidth / 2240, innerHeight / 1380)`, recomputed on `resize`. The extra room (240 px wide, 47 px tall, beyond the 2000×1333 stage) leaves space for the ribbons that stick out to the right of the book.
+  - `s = min(innerWidth / 2240, innerHeight / 1120)`, recomputed on `resize`. The extra room (240 px wide beyond the 2000×1333 stage) leaves space for the ribbons that stick out to the right of the book. The 1120 keeps pages at full height; ultrawide windows (wider than about 2:1) get a smaller book instead of short pages. The book is pinned to the top and the bottom may be cropped.
   - The book image has `filter: drop-shadow(0 28px 36px rgba(0,0,0,.65))` so it sits on the table.
   - All page content is positioned in design pixels inside the stage, so text stays exactly on the parchment at any window size.
   - Layers inside the stage: ribbons (z 0, tucked under the cover), book image (z 1), page content (z 2).
