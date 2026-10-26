@@ -1,6 +1,6 @@
-# Dungeon Quest Log
+<img width="2195" height="716" alt="image" src="https://github.com/user-attachments/assets/842a1427-9eda-4258-b45c-958b7dfbec9c" />
 
-A shared quest tracker for one D&D party, drawn as an old leather-bound journal on a tavern table. Every player runs it on their own PC in Docker; everyone shares one Supabase database, so changes appear live for the whole party.
+**Dungeon Quest Log** is a shared quest tracker for your D&D party. Every player runs it on their own PC in Docker; everyone shares one Supabase database, so changes appear live for the whole party.
 
 <img width="2560" height="911" alt="image" src="https://github.com/user-attachments/assets/10607199-829c-4ef5-9d02-ffe0239ff779" />
 
