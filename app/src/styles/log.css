@@ -106,11 +106,15 @@
 
 /* ── Right page ──────────────────────────────────────────────────────────── */
 .page-right {
+  overflow-x: hidden;
   mask-image: linear-gradient(to bottom, #000 calc(100% - 36px), transparent);
   padding-bottom: 36px;
 }
 
-.quest-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.quest-view { display: flex; flex-direction: column; height: 100%; }
+/* Room for the tilted seal, so it is neither clipped at the top nor widens the page sideways. */
+.quest-head { flex: none; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 12px 8px 0 0; }
+.quest-body { flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--ink-leader) transparent; }
 .kicker {
   margin: 0;
   font: 400 17px/1.2 var(--font-label);
@@ -119,7 +123,7 @@
   color: var(--crimson);
 }
 .quest-title { margin: 8px 0 0; font: 400 52px/1.1 var(--font-title); color: var(--ink-title); }
-.wax-seal { flex: none; width: 88px; height: 88px; margin-top: -8px; transform: rotate(-8deg); }
+.wax-seal { flex: none; width: 88px; height: 88px; transform: rotate(-8deg); }
 .wax-seal-label { font: 400 9px var(--font-label); letter-spacing: 2px; fill: var(--on-crimson); }
 
 .ledger {
