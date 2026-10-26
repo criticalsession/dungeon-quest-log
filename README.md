@@ -2,6 +2,8 @@
 
 A shared quest tracker for one D&D party, drawn as an old leather-bound journal on a tavern table. Every player runs it on their own PC in Docker; everyone shares one Supabase database, so changes appear live for the whole party.
 
+<img width="2560" height="911" alt="image" src="https://github.com/user-attachments/assets/10607199-829c-4ef5-9d02-ffe0239ff779" />
+
 ## For players
 
 You need a Windows PC with [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed. Nothing else.
@@ -28,7 +30,7 @@ To stop it, double-click **`stop.bat`**. To leave the log, press **Close the boo
 
 Credits for the fonts and artwork are in [CREDITS.md](CREDITS.md).
 
-## One-time setup (the repo owner, once per party)
+## For DMs
 
 1. Create a free project at <https://supabase.com/dashboard>.
 2. **SQL Editor:** paste the contents of `supabase/schema.sql` and run it. Run it only once per project.
