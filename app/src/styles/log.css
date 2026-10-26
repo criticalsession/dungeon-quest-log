@@ -147,6 +147,8 @@
 .ledger-row dd { margin: 0; }
 
 .description > * { margin: 0 0 14px; }
+/* Tiptap wraps list items in <p>; drop its default margins. */
+.description li > p, .editor-content .tiptap li > p { margin: 0; }
 .description h2 { font: 400 34px/1.2 var(--font-title); color: var(--ink-title); }
 .description h3 { font: 400 28px/1.2 var(--font-title); color: var(--ink-title); }
 .description blockquote { padding-left: 18px; border-left: 3px solid var(--ink-leader); font-style: italic; color: var(--ink-muted); }
