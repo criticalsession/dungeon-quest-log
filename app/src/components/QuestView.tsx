@@ -110,7 +110,6 @@ export function QuestView({ quest, archivedBy }: { quest: Quest; archivedBy?: st
         </div>
         <WaxSeal status={quest.status} archived={quest.archived} />
       </header>
-      <div className="quest-body">
       {archivedBy && <p className="lock-note" role="status">Archived by {archivedBy}.</p>}
       {rows.length > 0 && <dl className="ledger">{rows}</dl>}
       {html && <div className="description" dangerouslySetInnerHTML={{ __html: html }} />}
@@ -118,7 +117,6 @@ export function QuestView({ quest, archivedBy }: { quest: Quest; archivedBy?: st
       <p className="quest-foot">
         Last amended by {quest.updated_by_name}, {formatRelative(quest.updated_at, now)}
       </p>
-      </div>
     </article>
   )
 }

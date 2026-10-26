@@ -40,7 +40,7 @@
 .stage-narrow .page-foot { margin-top: 12px; }
 .stage-narrow .list-scroll { overflow: visible; mask-image: none; padding-bottom: 0; }
 .stage-narrow .quest-view { height: auto; }
-.stage-narrow .quest-body { overflow: visible; }
+.stage-narrow .quest-view > .description { overflow: visible; }
 .stage-narrow .empty-state { height: auto; padding: 8px 0; }
 .stage-narrow .empty-state .flourish { width: 240px; margin-bottom: 12px; }
 

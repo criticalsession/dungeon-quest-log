@@ -114,7 +114,8 @@
 .quest-view { display: flex; flex-direction: column; height: 100%; }
 /* Room for the tilted seal, so it is neither clipped at the top nor widens the page sideways. */
 .quest-head { flex: none; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 12px 8px 0 0; }
-.quest-body { flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--ink-leader) transparent; }
+.quest-view > * { flex: none; }
+.quest-view > .description { flex: 0 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--ink-leader) transparent; }
 .kicker {
   margin: 0;
   font: 400 17px/1.2 var(--font-label);
